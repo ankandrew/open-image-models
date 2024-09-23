@@ -1,0 +1,123 @@
+[tool.poetry]
+name = "open-image-models"
+version = "0.1.0"
+description = "Open and Accesible image models out-of-the-box."
+authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
+readme = "README.md"
+repository = "https://github.com/ankandrew/open-image-models"
+documentation = "https://ankandrew.github.io/fast-plate-ocr"
+keywords = ["plate-recognition", "license-plate-recognition", "license-plate-ocr"]  # FIXME
+classifiers = [
+    "Typing :: Typed",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = ">=1.20"
+onnxruntime = ">=1.19.2"
+# Since onnxruntime-gpu depends on CUDA, don't install on macOS
+onnxruntime-gpu = { version = ">=1.19.2", markers = "sys_platform != 'darwin'" }
+opencv-python = "*"
+tqdm = "*"
+rich = "*"
+
+
+# Optional packages for creating the docs
+mkdocs-material = { version = "*", optional = true }
+mkdocstrings = { version = "*", extras = ["python"], optional = true }
+mike = { version = "*", optional = true }
+
+[tool.poetry.extras]
+docs = ["mkdocs-material", "mkdocstrings", "mike"]
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "*"
+ruff = "*"
+pylint = "*"
+
+[tool.poetry.scripts]  # FIXME
+fast_plate_ocr = "fast_plate_ocr.cli.cli:main_cli"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    "W",
+    # Pyflakes
+    "F",
+    # pep8-naming
+    "N",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # flake8-unused-arguments
+    "ARG",
+    # Pylint
+    "PL",
+    # Perflint
+    "PERF",
+    # Ruff-specific rules
+    "RUF",
+    # pandas-vet
+    "PD",
+]
+ignore = ["N812", "PLR2004", "PD011"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.pylint]
+max-args = 8
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.mypy]
+disable_error_code = "import-untyped"
+
+[tool.pylint.typecheck]
+generated-members = ["cv2.*"]
+signature-mutators = [
+    "click.decorators.option",
+    "click.decorators.argument",
+    "click.decorators.version_option",
+    "click.decorators.help_option",
+    "click.decorators.pass_context",
+    "click.decorators.confirmation_option"
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint."messages control"]
+disable = ["missing-class-docstring", "missing-function-docstring", "wrong-import-order"]
+
+[tool.pylint.design]
+max-args = 8
+min-public-methods = 1
+
+[tool.pylint.basic]
+no-docstring-rgx = "^__|^test_"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
