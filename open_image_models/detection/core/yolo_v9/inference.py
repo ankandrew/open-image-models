@@ -133,6 +133,7 @@ class YoloV9ObjectDetector(ObjectDetector):
             Text(f"Model: {self.model_name}\nProvider: {self.providers}", style="bold green"),
             title="Model Information",
             border_style="bright_blue",
+            expand=False,
         )
         console.print(model_info)
 
