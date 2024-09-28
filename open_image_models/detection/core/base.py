@@ -28,7 +28,16 @@ class ObjectDetector(Protocol):
             image: An input image as a numpy array.
 
         Returns:
-            A list of dictionaries containing detection results,
-            where each dictionary includes 'label', 'confidence',
-            and 'bounding_box' (tuple of x_min, y_min, x_max, y_max).
+            A list of DetectionResult containing detected objects information.
+        """
+
+    def show_benchmark(self, num_runs: int = 10) -> None:
+        """
+        Display the benchmark results of the model with a single random image.
+
+        Args:
+            num_runs: Number of times to run inference on the image for averaging.
+
+        Displays:
+            Model information and benchmark results in a formatted table.
         """
