@@ -41,3 +41,14 @@ class ObjectDetector(Protocol):
         Displays:
             Model information and benchmark results in a formatted table.
         """
+
+    def display_predictions(self, image: np.ndarray) -> np.ndarray:
+        """
+        Run object detection on the input image and display the predictions on the image.
+
+        Args:
+            image: An input image as a numpy array.
+
+        Returns:
+            The image with bounding boxes and labels drawn on it.
+        """

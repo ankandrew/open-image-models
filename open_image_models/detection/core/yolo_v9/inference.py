@@ -7,6 +7,7 @@ import os
 import pathlib
 from collections.abc import Sequence
 
+import cv2
 import numpy as np
 import onnxruntime as ort
 from rich.console import Console
@@ -148,3 +149,45 @@ class YoloV9ObjectDetector(ObjectDetector):
 
         # Display the table
         console.print(table)
+
+    def display_predictions(self, image: np.ndarray) -> np.ndarray:
+        """
+        Run object detection on the input image and display the predictions on the image.
+
+        Args:
+            image: An input image as a numpy array.
+
+        Returns:
+            The image with bounding boxes and labels drawn on it.
+        """
+        # Get the predictions
+        detections = self.predict(image)
+
+        # Draw predictions on the image
+        for detection in detections:
+            bbox = detection.bounding_box
+            label = f"{detection.label}: {detection.confidence:.2f}"
+
+            # Draw bounding box
+            cv2.rectangle(image, (bbox.x1, bbox.y1), (bbox.x2, bbox.y2), (0, 255, 0), 2)
+
+            # Calculate the position for the label text above the bounding box
+            (text_width, text_height), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+            cv2.rectangle(
+                image,
+                (bbox.x1, bbox.y1 - text_height - baseline),
+                (bbox.x1 + text_width, bbox.y1),
+                (0, 255, 0),
+                thickness=cv2.FILLED,
+            )
+            cv2.putText(
+                image,
+                label,
+                (bbox.x1, bbox.y1 - baseline),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 0, 0),
+                1,
+            )
+
+        return image
