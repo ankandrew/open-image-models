@@ -89,7 +89,13 @@ class YoloV9ObjectDetector(ObjectDetector):
         with log_time_taken("ONNX end2end inference"):
             predictions = self.model.run([self.output_name], {self.input_name: inputs})[0]
         # Convert raw predictions to a list of DetectionResult objects
-        return convert_to_detection_result(predictions, self.class_labels, ratio, (dw, dh))
+        return convert_to_detection_result(
+            predictions=predictions,
+            class_labels=self.class_labels,
+            ratio=ratio,
+            padding=(dw, dh),
+            score_threshold=self.conf_thresh,
+        )
 
     def show_benchmark(self, num_runs: int = 1_000):
         """

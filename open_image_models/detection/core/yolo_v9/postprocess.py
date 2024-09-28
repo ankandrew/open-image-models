@@ -4,7 +4,11 @@ from open_image_models.detection.core.base import BoundingBox, DetectionResult
 
 
 def convert_to_detection_result(
-    predictions: np.ndarray, class_labels: list[str], ratio: tuple[float, float], padding: tuple[float, float]
+    predictions: np.ndarray,
+    class_labels: list[str],
+    ratio: tuple[float, float],
+    padding: tuple[float, float],
+    score_threshold: float = 0.5,
 ) -> list[DetectionResult]:
     """
     Convert raw model output into a list of DetectionResult objects, with adjustments
@@ -16,14 +20,12 @@ def convert_to_detection_result(
         class_labels: List of class labels corresponding to the class IDs.
         ratio: Scaling ratio used during preprocessing.
         padding: Tuple of padding values (dw, dh) added during preprocessing.
+        score_threshold: Minimum confidence score to include a detection result.
 
     Returns:
         A list of DetectionResult objects.
     """
     results = []
-
-    # Correct indexing based on the expected format of predictions
-    batch_indices = predictions[:, 0]  # Optional, can be ignored for single image processing
     # Extract bounding box coordinates
     bboxes = predictions[:, 1:5]
     # Convert to int for indexing class labels
@@ -32,6 +34,10 @@ def convert_to_detection_result(
     scores = predictions[:, 6]
 
     for bbox, class_id, score in zip(bboxes, class_ids, scores, strict=False):
+        # Only include results that meet the score threshold
+        if score < score_threshold:
+            continue
+
         # Adjust bounding box from scaled image back to original image size
         bbox[0] = (bbox[0] - padding[0]) / ratio[0]
         bbox[1] = (bbox[1] - padding[1]) / ratio[1]
