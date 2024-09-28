@@ -4,11 +4,14 @@ Common utilities used across the package.
 
 import logging
 import os
+import random
 import time
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import IO, Any
+
+import numpy as np
 
 
 @contextmanager
@@ -66,3 +69,16 @@ def safe_write(
     except Exception as e:
         Path(file).unlink(missing_ok=True)
         raise e
+
+
+def set_seed(seed: int = 7331):
+    """
+    Set seed for common random number generators to ensure reproducibility.
+
+    Args:
+        seed: An integer seed value for random number generators.
+    """
+    # Python's built-in random module
+    random.seed(seed)
+    # NumPy's random module
+    np.random.seed(seed)
