@@ -6,7 +6,15 @@ authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
 readme = "README.md"
 repository = "https://github.com/ankandrew/open-image-models"
 documentation = "https://ankandrew.github.io/fast-plate-ocr"
-keywords = ["plate-recognition", "license-plate-recognition", "license-plate-ocr"]  # FIXME
+keywords = [
+    "image-processing",
+    "computer-vision",
+    "deep-learning",
+    "image-classification",
+    "object-detection",
+    "open-source-models",
+    "onnx",
+]
 classifiers = [
     "Typing :: Typed",
     "Intended Audience :: Developers",
@@ -47,9 +55,6 @@ pytest = "*"
 mypy = "*"
 ruff = "*"
 pylint = "*"
-
-[tool.poetry.scripts]  # FIXME
-fast_plate_ocr = "fast_plate_ocr.cli.cli:main_cli"
 
 [tool.ruff]
 line-length = 120
