@@ -29,7 +29,7 @@ def log_time_taken(process_name: str) -> Iterator[None]:
         time_end: float = time.perf_counter()
         time_elapsed: float = time_end - time_start
         logger = logging.getLogger(__name__)
-        print("Computation time of '%s' = %.3fms", process_name, 1_000 * time_elapsed)
+        logger.info("Computation time of '%s' = %.3fms", process_name, 1_000 * time_elapsed)
 
 
 @contextmanager
