@@ -119,6 +119,8 @@ disable = ["missing-class-docstring", "missing-function-docstring", "wrong-impor
 [tool.pylint.design]
 max-args = 8
 min-public-methods = 1
+max-attributes = 8
+max-positional-arguments = 6
 
 [tool.pylint.basic]
 no-docstring-rgx = "^__|^test_"
