@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, overload
 
 import numpy as np
 
@@ -21,6 +21,18 @@ class DetectionResult:
 
 
 class ObjectDetector(Protocol):
+    @overload
+    def predict(self, images: np.ndarray) -> list[DetectionResult]: ...
+
+    @overload
+    def predict(self, images: list[np.ndarray]) -> list[list[DetectionResult]]: ...
+
+    @overload
+    def predict(self, images: list[str]) -> list[list[DetectionResult]]: ...
+
+    @overload
+    def predict(self, images: list[os.PathLike[str]]) -> list[list[DetectionResult]]: ...
+
     def predict(
         self, images: np.ndarray | list[np.ndarray] | list[str] | list[os.PathLike[str]]
     ) -> list[DetectionResult] | list[list[DetectionResult]]:

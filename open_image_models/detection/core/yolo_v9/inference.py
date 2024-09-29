@@ -2,6 +2,7 @@ import logging
 import os
 import pathlib
 from collections.abc import Sequence
+from typing import cast, overload
 
 import cv2
 import numpy as np
@@ -66,6 +67,18 @@ class YoloV9ObjectDetector(ObjectDetector):
         self.providers = providers
         LOGGER.info("Using ONNX Runtime with %s provider(s)", self.providers)
 
+    @overload
+    def predict(self, images: np.ndarray) -> list[DetectionResult]: ...
+
+    @overload
+    def predict(self, images: list[np.ndarray]) -> list[list[DetectionResult]]: ...
+
+    @overload
+    def predict(self, images: list[str]) -> list[list[DetectionResult]]: ...
+
+    @overload
+    def predict(self, images: list[os.PathLike[str]]) -> list[list[DetectionResult]]: ...
+
     def predict(
         self, images: np.ndarray | list[np.ndarray] | list[str] | list[os.PathLike[str]]
     ) -> list[DetectionResult] | list[list[DetectionResult]]:
@@ -91,6 +104,7 @@ class YoloV9ObjectDetector(ObjectDetector):
             #       See also https://stackoverflow.com/a/76735504/4544940
             if all(isinstance(img, np.ndarray) for img in images):
                 # List of image arrays
+                images = cast(list[np.ndarray], images)
                 return [self._predict(img) for img in images]
             if all(isinstance(img, str | os.PathLike) for img in images):
                 # List of image paths
