@@ -33,9 +33,7 @@ class ObjectDetector(Protocol):
     @overload
     def predict(self, images: list[os.PathLike[str]]) -> list[list[DetectionResult]]: ...
 
-    def predict(
-        self, images: np.ndarray | list[np.ndarray] | list[str] | list[os.PathLike[str]]
-    ) -> list[DetectionResult] | list[list[DetectionResult]]:
+    def predict(self, images):
         """
         Perform object detection on one or multiple images.
 
