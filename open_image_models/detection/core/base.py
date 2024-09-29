@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -20,15 +21,19 @@ class DetectionResult:
 
 
 class ObjectDetector(Protocol):
-    def predict(self, image: np.ndarray) -> list[DetectionResult]:
+    def predict(
+        self, images: np.ndarray | list[np.ndarray] | list[str] | list[os.PathLike[str]]
+    ) -> list[DetectionResult] | list[list[DetectionResult]]:
         """
-        Run object detection on the input image.
+        Perform object detection on one or multiple images.
 
         Args:
-            image: An input image as a numpy array.
+            images: A single image as a numpy array, a list of images as numpy arrays,
+                    or a list of image file paths.
 
         Returns:
-            A list of DetectionResult containing detected objects information.
+            A list of DetectionResult for a single image input,
+            or a list of lists of DetectionResult for multiple images.
         """
 
     def show_benchmark(self, num_runs: int = 10) -> None:

@@ -72,7 +72,41 @@ class YoloV9ObjectDetector(ObjectDetector):
         self.providers = providers
         LOGGER.info("Using ONNX Runtime with %s provider(s)", self.providers)
 
-    def predict(self, image: np.ndarray) -> list[DetectionResult]:
+    def predict(
+        self, images: np.ndarray | list[np.ndarray] | list[str] | list[os.PathLike[str]]
+    ) -> list[DetectionResult] | list[list[DetectionResult]]:
+        """
+        Perform object detection on one or multiple images.
+
+        Args:
+            images: A single image as a numpy array, a list of images as numpy arrays,
+                    or a list of image file paths.
+
+        Returns:
+            A list of DetectionResult for a single image input,
+            or a list of lists of DetectionResult for multiple images.
+        """
+        # Check the type of input and process accordingly
+        if isinstance(images, np.ndarray):
+            # Single image array
+            return self._predict(images)
+        if isinstance(images, list):
+            # List of images or image paths
+            if all(isinstance(img, np.ndarray) for img in images):
+                # List of image arrays
+                return [self._predict(img) for img in images]
+            if all(isinstance(img, str | os.PathLike) for img in images):
+                # List of image paths
+                loaded_images = [cv2.imread(str(img)) for img in images]
+                # Check for any images that failed to load
+                for idx, img in enumerate(loaded_images):
+                    if img is None:
+                        raise ValueError(f"Failed to load image at path: {images[idx]}")
+                return [self._predict(img) for img in loaded_images]
+            raise TypeError("List must contain either all numpy arrays or all image file paths.")
+        raise TypeError("Input must be a numpy array, a list of numpy arrays, or a list of image file paths.")
+
+    def _predict(self, image: np.ndarray) -> list[DetectionResult]:
         """
         Perform object detection on a single image frame.
 
