@@ -47,28 +47,22 @@ class YoloV9ObjectDetector(ObjectDetector):
         """
         self.conf_thresh = conf_thresh
         self.class_labels = class_labels
-
         # Check if model path exists
         model_path = pathlib.Path(model_path)
         if not model_path.exists():
             raise FileNotFoundError(f"ONNX model not found at '{model_path}'")
-
         self.model_name = model_path.stem
-
         # Use all available providers if none are specified
         providers = providers or ort.get_available_providers()
         self.model = ort.InferenceSession(str(model_path), providers=providers, sess_options=sess_options)
-
         # Get input and output names from the model
         self.input_name = self.model.get_inputs()[0].name
         self.output_name = self.model.get_outputs()[0].name
-
         # Validate model input shape for square images only
         _, _, h, w = self.model.get_inputs()[0].shape
         if h != w:
             raise ValueError(f"Model only supports square images, but received shape: {h}x{w}")
         self.img_size = h, w
-
         self.providers = providers
         LOGGER.info("Using ONNX Runtime with %s provider(s)", self.providers)
 
@@ -155,19 +149,14 @@ class YoloV9ObjectDetector(ObjectDetector):
         """
         # Set seed for generating same image
         set_seed(1337)
-
         # Generate a single random image
         image = np.random.randint(0, 256, (*self.img_size, 3), dtype=np.uint8)
-
         # Warm-up phase
         self._warm_up(image, num_runs=100)
-
         # Measure performance
         total_time_ms = self._benchmark_inference(image, num_runs)
-
         avg_time_ms = total_time_ms / num_runs
         fps = 1_000 / avg_time_ms if avg_time_ms > 0 else float("inf")
-
         # Display model information and benchmark results
         self._display_benchmark_results(avg_time_ms, fps, num_runs)
 
@@ -217,7 +206,6 @@ class YoloV9ObjectDetector(ObjectDetector):
             num_runs (int): Total number of benchmark runs.
         """
         console = Console()
-
         # Printing model details outside the table
         model_info = Panel(
             Text(f"Model: {self.model_name}\nProvider: {self.providers}", style="bold green"),
@@ -226,16 +214,13 @@ class YoloV9ObjectDetector(ObjectDetector):
             expand=False,
         )
         console.print(model_info)
-
         # Creating the results table
         table = Table(title="YoloV9 Object Detector Performance", border_style="bright_blue")
         table.add_column("Metric", justify="center", style="cyan", no_wrap=True)
         table.add_column("Value", justify="center", style="magenta")
-
         table.add_row("Number of Runs", str(num_runs))
         table.add_row("Average Time (ms)", f"{avg_time_ms:.2f}")
         table.add_row("Frames Per Second (FPS)", f"{fps:.2f}")
-
         # Display the table
         console.print(table)
 
@@ -250,16 +235,13 @@ class YoloV9ObjectDetector(ObjectDetector):
             The image with bounding boxes and labels drawn on it.
         """
         # Get the predictions
-        detections = self.predict(image)
-
+        detections: list[DetectionResult] = self.predict(image)
         # Draw predictions on the image
         for detection in detections:
             bbox = detection.bounding_box
             label = f"{detection.label}: {detection.confidence:.2f}"
-
             # Draw bounding box
             cv2.rectangle(image, (bbox.x1, bbox.y1), (bbox.x2, bbox.y2), (0, 255, 0), 2)
-
             # Calculate the position for the label text above the bounding box
             (text_width, text_height), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
             cv2.rectangle(
@@ -278,5 +260,4 @@ class YoloV9ObjectDetector(ObjectDetector):
                 (0, 0, 0),
                 1,
             )
-
         return image
