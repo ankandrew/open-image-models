@@ -25,7 +25,7 @@ class ObjectDetector(Protocol):
         Perform object detection on one or multiple images.
 
         Args:
-            images: A single image as a numpy array, a list of images as numpy arrays,
+            images: A single image as a numpy array, a single image path as a string, a list of images as numpy arrays,
                     or a list of image file paths.
 
         Returns:
