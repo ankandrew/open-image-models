@@ -122,6 +122,9 @@ min-public-methods = 1
 max-attributes = 8
 max-positional-arguments = 6
 
+[tool.pylint.miscellaneous]
+notes = ["FIXME", "XXX"]
+
 [tool.pylint.basic]
 no-docstring-rgx = "^__|^test_"
 
