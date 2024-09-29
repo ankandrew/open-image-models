@@ -2,7 +2,6 @@
 Open Image Models package.
 """
 
-# FIXME
-# from open_image_models.detection.onnx_inference import ONNXPlateRecognizer
-#
-# __all__ = ["ONNXPlateRecognizer"]
+from open_image_models.detection.pipeline.license_plate import LicensePlateDetector
+
+__all__ = ["LicensePlateDetector"]
