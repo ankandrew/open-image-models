@@ -13,24 +13,22 @@ from tqdm.asyncio import tqdm
 
 from open_image_models.utils import safe_write
 
-BASE_URL: str = "https://github.com/ankandrew/open-image-models/releases/download"  # TODO: Create release
+BASE_URL: str = "https://github.com/ankandrew/open-image-models/releases/download"
 """Base URL where models will be fetched."""
 PlateDetectorModel = Literal[
-    "yolo-v9-s-640-license-plate",
-    "yolo-v9-t-640-license-plate",
-    "yolo-v9-t-512-license-plate",
-    "yolo-v9-t-384-license-plate",
-    "yolo-v9-t-256-license-plate",
+    "yolo-v9-t-640-license-plate-end2end",
+    "yolo-v9-t-512-license-plate-end2end",
+    "yolo-v9-t-384-license-plate-end2end",
+    "yolo-v9-t-256-license-plate-end2end",
 ]
 """Available ONNX models for doing detection."""
 
 AVAILABLE_ONNX_MODELS: dict[PlateDetectorModel, str] = {
     # Plate Detection
-    "yolo-v9-s-640-license-plate": f"{BASE_URL}/assets/yolo-v9-s-640-license-plate.onnx",
-    "yolo-v9-t-640-license-plate": f"{BASE_URL}/assets/yolo-v9-t-640-license-plate.onnx",
-    "yolo-v9-t-512-license-plate": f"{BASE_URL}/assets/yolo-v9-t-512-license-plate.onnx",
-    "yolo-v9-t-384-license-plate": f"{BASE_URL}/assets/yolo-v9-t-384-license-plate.onnx",
-    "yolo-v9-t-256-license-plate": f"{BASE_URL}/assets/yolo-v9-t-256-license-plate.onnx",
+    "yolo-v9-t-640-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-640-license-plates-end2end.onnx",
+    "yolo-v9-t-512-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-512-license-plates-end2end.onnx",
+    "yolo-v9-t-384-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-384-license-plates-end2end.onnx",
+    "yolo-v9-t-256-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-256-license-plates-end2end.onnx",
 }
 MODEL_CACHE_DIR: pathlib.Path = pathlib.Path.home() / ".cache" / "open-image-models"
 """Default location where models will be stored."""
