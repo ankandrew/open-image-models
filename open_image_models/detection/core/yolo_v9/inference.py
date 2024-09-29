@@ -18,11 +18,11 @@ from rich.text import Text
 from open_image_models.detection.core.base import DetectionResult, ObjectDetector
 from open_image_models.detection.core.yolo_v9.postprocess import convert_to_detection_result
 from open_image_models.detection.core.yolo_v9.preprocess import preprocess
-from open_image_models.utils import log_time_taken, measure_time, set_seed
+from open_image_models.utils import measure_time, set_seed
 
 # Setup logging
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.INFO)  # Set the logging level accordingly (DEBUG, INFO, etc.)
+LOGGER.setLevel(logging.INFO)
 
 
 class YoloV9ObjectDetector(ObjectDetector):
@@ -87,8 +87,15 @@ class YoloV9ObjectDetector(ObjectDetector):
         # Preprocess the image using YoloV9-specific preprocessing function
         inputs, ratio, (dw, dh) = preprocess(image, self.img_size)
         # Run inference
-        with log_time_taken("ONNX end2end inference"):
+        try:
             predictions = self.model.run([self.output_name], {self.input_name: inputs})[0]
+        # CoreML doesn't handle empty data scenario, so sometimes the end to end NMS might fail.
+        # For more information see https://github.com/microsoft/onnxruntime/issues/20372
+        # pylint: disable=broad-except
+        except Exception as e:
+            # Log a generic warning message with the exception details
+            LOGGER.warning("An error occurred during model inference: %s", e)
+            return []
         # Convert raw predictions to a list of DetectionResult objects
         return convert_to_detection_result(
             predictions=predictions,
