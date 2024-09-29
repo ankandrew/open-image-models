@@ -92,6 +92,9 @@ class YoloV9ObjectDetector(ObjectDetector):
             return self._predict(images)
         if isinstance(images, list):
             # List of images or image paths
+            # TODO: Upload ONNX models with dynamic batch, so this is performed in truly batch inference fashion.
+            #       Dynamic batch inference hurts performance running locally too.
+            #       See also https://stackoverflow.com/a/76735504/4544940
             if all(isinstance(img, np.ndarray) for img in images):
                 # List of image arrays
                 return [self._predict(img) for img in images]
