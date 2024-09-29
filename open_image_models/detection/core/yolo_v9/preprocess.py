@@ -32,7 +32,7 @@ def letterbox(
     new_shape: tuple[int, int] | int = (640, 640),
     color: tuple[int, int, int] = (114, 114, 114),
     scaleup: bool = True,
-) -> tuple[np.ndarray, tuple[float, float], tuple[int, int]]:
+) -> tuple[np.ndarray, tuple[float, float], tuple[float, float]]:
     """
     Simplified letterbox function with fixed behavior for YOLOv9 preprocessing.
 
@@ -51,9 +51,8 @@ def letterbox(
 
     # Calculate new unpadded dimensions and padding
     new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))
-    dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1]
-    dw /= 2  # divide padding into 2 sides
-    dh /= 2
+    dw = (new_shape[1] - new_unpad[0]) / 2  # divide padding into 2 sides
+    dh = (new_shape[0] - new_unpad[1]) / 2
 
     # Resize the image to the new unpadded dimensions
     if shape[::-1] != new_unpad:
