@@ -74,17 +74,20 @@ class YoloV9ObjectDetector(ObjectDetector):
     def predict(self, images: list[np.ndarray]) -> list[list[DetectionResult]]: ...
 
     @overload
+    def predict(self, images: str) -> list[DetectionResult]: ...
+
+    @overload
     def predict(self, images: list[str]) -> list[list[DetectionResult]]: ...
 
     @overload
     def predict(self, images: list[os.PathLike[str]]) -> list[list[DetectionResult]]: ...
 
-    def predict(self, images):
+    def predict(self, images) -> list[DetectionResult] | list[list[DetectionResult]]:
         """
         Perform object detection on one or multiple images.
 
         Args:
-            images: A single image as a numpy array, a list of images as numpy arrays,
+            images: A single image as a numpy array, a single image path as a string, a list of images as numpy arrays,
                     or a list of image file paths.
 
         Returns:
@@ -95,6 +98,14 @@ class YoloV9ObjectDetector(ObjectDetector):
         if isinstance(images, np.ndarray):
             # Single image array
             return self._predict(images)
+        # Check if a single image path is provided as a string
+        if isinstance(images, str | os.PathLike):
+            # Try loading the image
+            image = cv2.imread(str(images))
+            if image is None:
+                raise ValueError(f"Failed to load image at path: {images}")
+            # Predict for the single loaded image
+            return self._predict(image)
         if isinstance(images, list):
             # List of images or image paths
             # TODO: Upload ONNX models with dynamic batch, so this is performed in truly batch inference fashion.
