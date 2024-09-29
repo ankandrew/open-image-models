@@ -1,7 +1,3 @@
-"""
-FIXME
-"""
-
 import logging
 import os
 import pathlib
@@ -59,13 +55,18 @@ class YoloV9ObjectDetector(ObjectDetector):
 
         self.model_name = model_path.stem
 
+        # Use all available providers if none are specified
         providers = providers or ort.get_available_providers()
         self.model = ort.InferenceSession(str(model_path), providers=providers, sess_options=sess_options)
 
+        # Get input and output names from the model
         self.input_name = self.model.get_inputs()[0].name
         self.output_name = self.model.get_outputs()[0].name
+
+        # Validate model input shape for square images only
         _, _, h, w = self.model.get_inputs()[0].shape
-        assert h == w, f"{h} and {w} don't match, squared images only supported"
+        if h != w:
+            raise ValueError(f"Model only supports square images, but received shape: {h}x{w}")
         self.img_size = h, w
 
         self.providers = providers
@@ -122,21 +123,65 @@ class YoloV9ObjectDetector(ObjectDetector):
         image = np.random.randint(0, 256, (*self.img_size, 3), dtype=np.uint8)
 
         # Warm-up phase
-        for _ in range(100):
-            self.predict(image)
+        self._warm_up(image, num_runs=100)
 
-        total_time_ms = 0.0
-
-        for _ in range(num_runs):
-            with measure_time() as timer:
-                self.predict(image)
-            total_time_ms += timer()
+        # Measure performance
+        total_time_ms = self._benchmark_inference(image, num_runs)
 
         avg_time_ms = total_time_ms / num_runs
         fps = 1_000 / avg_time_ms if avg_time_ms > 0 else float("inf")
 
-        # Printing model details outside the table
+        # Display model information and benchmark results
+        self._display_benchmark_results(avg_time_ms, fps, num_runs)
+
+    def _warm_up(self, image: np.ndarray, num_runs: int = 100):
+        """
+        Warm-up phase to ensure any initial model setup is done before benchmarking.
+
+        Args:
+            image (np.ndarray): Sample image for model warm-up.
+            num_runs (int, optional): Number of warm-up iterations. Default is 100.
+        """
+        LOGGER.info("Starting model warm-up with %d runs...", num_runs)
+        for _ in range(num_runs):
+            self.predict(image)
+        LOGGER.info("Model warm-up completed.")
+
+    def _benchmark_inference(self, image: np.ndarray, num_runs: int) -> float:
+        """
+        Measure the total inference time over a specified number of runs for benchmarking.
+
+        Args:
+            image (np.ndarray): Input image for inference benchmarking.
+            num_runs (int): Number of benchmark iterations.
+
+        Returns:
+            float: Total inference time in milliseconds over all iterations.
+        """
+        LOGGER.info("Starting benchmark with %d runs...", num_runs)
+        total_time_ms = 0.0
+        for _ in range(num_runs):
+            with measure_time() as timer:
+                self.predict(image)
+            total_time_ms += timer()
+        LOGGER.info("Benchmark completed.")
+        return total_time_ms
+
+    def _display_benchmark_results(self, avg_time_ms: float, fps: float, num_runs: int):
+        """
+        Display benchmark results including average inference time and frames per second (FPS).
+
+        This method presents the benchmarking results in a formatted table using the rich library,
+        including the number of runs, average inference time, and the calculated FPS.
+
+        Args:
+            avg_time_ms (float): Average inference time in milliseconds.
+            fps (float): Calculated frames per second based on average time.
+            num_runs (int): Total number of benchmark runs.
+        """
         console = Console()
+
+        # Printing model details outside the table
         model_info = Panel(
             Text(f"Model: {self.model_name}\nProvider: {self.providers}", style="bold green"),
             title="Model Information",
