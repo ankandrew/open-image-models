@@ -5,6 +5,7 @@ description = "Pre-trained image models using ONNX for fast, out-of-the-box infe
 authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
 readme = "README.md"
 repository = "https://github.com/ankandrew/open-image-models"
+license = "MIT"
 keywords = [
     "image-processing",
     "computer-vision",
