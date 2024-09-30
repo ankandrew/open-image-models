@@ -49,15 +49,9 @@ def _mock_image() -> np.ndarray:
 
 
 @pytest.fixture(name="mock_image_path", scope="module")
-def _mock_image_path(mock_image: np.ndarray) -> Iterator[Path]:
-    """Fixture to create and return a valid image file path in a temporary directory, and clean up afterward."""
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        # Create the image path inside the temporary directory
-        image_path = Path(tmp_dir) / "sample_image.jpg"
-        # Write the sample image to the file
-        cv2.imwrite(str(image_path), mock_image)
-        # Yield the image path to be used in the test
-        yield image_path
+def _mock_image_path() -> Iterator[Path]:
+    """Fixture to create and return a valid image file path."""
+    yield ASSETS_DIR / "car_image.webp"
 
 
 @pytest.fixture(name="yolo_detector", scope="module")
