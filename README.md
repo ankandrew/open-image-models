@@ -1,5 +1,5 @@
 <p>
-  <img src="./assets/open-image-models-logo.png" alt="Open Image Models Logo" width="400"/>
+  <img src="./assets/open-image-models-logo.png" alt="Open Image Models Logo" width="650"/>
 </p>
 
 # Fast & Lightweight License Plate OCR
