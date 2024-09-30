@@ -26,22 +26,21 @@
 
 ## Introduction
 
-We aim to provide a variety of **pre-trained** models for different **computer vision** tasks, such as object detection
-and image classification, that can be used **out-of-the-box** for **fast** inference using ONNX. These models are
-optimized for performance and accuracy across various image sizes and tasks.
+We offer **ready-to-use** models for a range of **computer vision** tasks like **detection**, **classification**, and
+**more**. With **ONNX** support, you get **fast** and **accurate** results right out of the box.
 
-Models found here can easily be integrated into your applications for real-time processing, making them ideal for
-deployment in edge devices, cloud environments, or production systems.
+Easily integrate these models into your apps for **real-time** processing—ideal for edge devices, cloud setups, or
+production environments. In **one line of code**, you can have **powerful** model **inference** running!
 
 ## Features
 
 - 🚀 Pre-trained Models: Models are **ready** for immediate use, no additional training required.
-- 🔄 ONNX Format: Cross-platform support for **fast inference** on both CPU and GPU environments.
+- 🌟 ONNX Format: Cross-platform support for **fast inference** on both CPU and GPU environments.
 - ⚡ High Performance: Optimized for both speed and accuracy, ensuring efficient **real-time** applications.
 - 📏 Variety of Image Sizes: Models **available** with different input sizes, allowing flexibility based on the task's
   performance and speed requirements.
-- 📊 Evaluation Metrics: Precision, Recall, mAP50, and mAP50-95 metrics are provided for each model, helping users select
-  the most appropriate model for their needs.
+- 💻 Simple API: Achieve license plate detection with just **one line of code**, enabling rapid integration and
+deployment.
 
 ## Available Models
 
