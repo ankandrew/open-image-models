@@ -19,6 +19,7 @@
   * [Available Models](#available-models)
     * [Object Detection](#object-detection)
       * [Plate Detection](#plate-detection)
+    * [Installation](#installation)
     * [Contributing](#contributing)
 <!-- TOC -->
 
@@ -57,6 +58,48 @@ deployment.
 
 _<sup>[1]</sup> Inference on Mac M1 chip using CPUExecutionProvider. Utilizing CoreMLExecutionProvider accelerates speed
 by 5x._
+
+<details>
+  <summary>Usage</summary>
+
+  ```python
+import cv2
+from rich import print
+
+from open_image_models import LicensePlateDetector
+
+# Initialize the License Plate Detector with the pre-trained YOLOv9 model
+lp_detector = LicensePlateDetector(detection_model="yolo-v9-t-384-license-plate-end2end")
+
+# Load an image
+image_path = "path/to/license_plate_image.jpg"
+image = cv2.imread(image_path)
+
+# Perform license plate detection
+detections = lp_detector.predict(image)
+print(detections)
+
+# Benchmark the model performance
+lp_detector.show_benchmark(num_runs=1000)
+
+# Display predictions on the image
+annotated_image = lp_detector.display_predictions(image)
+
+# Show the annotated image
+cv2.imshow("Annotated Image", annotated_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+  ```
+
+</details>
+
+### Installation
+
+To install open-image-models via pip, use the following command:
+
+```shell
+pip install open-image-models
+```
 
 ### Contributing
 
