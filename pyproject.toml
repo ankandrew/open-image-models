@@ -1,11 +1,10 @@
 [tool.poetry]
 name = "open-image-models"
 version = "0.1.0"
-description = "Open and Accesible image models out-of-the-box."
+description = "Pre-trained image models using ONNX for fast, out-of-the-box inference."
 authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
 readme = "README.md"
 repository = "https://github.com/ankandrew/open-image-models"
-documentation = "https://ankandrew.github.io/fast-plate-ocr"
 keywords = [
     "image-processing",
     "computer-vision",
