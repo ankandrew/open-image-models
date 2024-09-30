@@ -1,20 +1,19 @@
+# Open Image Models
+
+[![Actions status](https://github.com/ankandrew/open-image-models/actions/workflows/main.yaml/badge.svg)](https://github.com/ankandrew/open-image-models/actions)
+[![image](https://img.shields.io/pypi/v/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
+[![image](https://img.shields.io/pypi/pyversions/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![image](https://img.shields.io/pypi/l/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
+
 <p>
   <img src="./assets/open-image-models-logo.png" alt="Open Image Models Logo" width="650"/>
 </p>
 
-# Fast & Lightweight License Plate OCR
-
-[![Actions status](https://github.com/ankandrew/fast-plate-ocr/actions/workflows/main.yaml/badge.svg)](https://github.com/ankandrew/fast-plate-ocr/actions)
-[![Keras 3](https://img.shields.io/badge/Keras-3-red?logo=keras&logoColor=red&labelColor=white)](https://keras.io/keras_3/)
-[![image](https://img.shields.io/pypi/v/fast-plate-ocr.svg)](https://pypi.python.org/pypi/fast-plate-ocr)
-[![image](https://img.shields.io/pypi/pyversions/fast-plate-ocr.svg)](https://pypi.python.org/pypi/fast-plate-ocr)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
-[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
-[![image](https://img.shields.io/pypi/l/fast-plate-ocr.svg)](https://pypi.python.org/pypi/fast-plate-ocr)
-
 <!-- TOC -->
-* [Fast & Lightweight License Plate OCR](#fast--lightweight-license-plate-ocr)
+* [Open Image Models](#open-image-models)
   * [Introduction](#introduction)
   * [Features](#features)
   * [Available Models](#available-models)
@@ -27,9 +26,9 @@
 
 ## Introduction
 
-We aim to provide a variety of **pre-trained** models for different **computer vision** tasks, such as object detection and
-image classification, that can be used **out-of-the-box** for **fast** inference using ONNX. These models are optimized for
-performance and accuracy across various image sizes and tasks.
+We aim to provide a variety of **pre-trained** models for different **computer vision** tasks, such as object detection
+and image classification, that can be used **out-of-the-box** for **fast** inference using ONNX. These models are
+optimized for performance and accuracy across various image sizes and tasks.
 
 Models found here can easily be integrated into your applications for real-time processing, making them ideal for
 deployment in edge devices, cloud environments, or production systems.
@@ -69,7 +68,7 @@ To start contributing or to begin development, you can follow these steps:
 
 1. Clone repo
     ```shell
-    git clone https://github.com/ankandrew/fast-plate-ocr.git
+    git clone https://github.com/ankandrew/open-image-models.git
     ```
 2. Install all dependencies using [Poetry](https://python-poetry.org/docs/#installation):
     ```shell
