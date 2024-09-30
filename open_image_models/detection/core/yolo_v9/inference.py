@@ -80,6 +80,9 @@ class YoloV9ObjectDetector(ObjectDetector):
     def predict(self, images: list[str]) -> list[list[DetectionResult]]: ...
 
     @overload
+    def predict(self, images: os.PathLike[str]) -> list[list[DetectionResult]]: ...
+
+    @overload
     def predict(self, images: list[os.PathLike[str]]) -> list[list[DetectionResult]]: ...
 
     def predict(self, images) -> list[DetectionResult] | list[list[DetectionResult]]:
