@@ -35,13 +35,12 @@ production environments. In **one line of code**, you can have **powerful** mode
 
 ## Features
 
-- 🚀 Pre-trained Models: Models are **ready** for immediate use, no additional training required.
-- 🌟 ONNX Format: Cross-platform support for **fast inference** on both CPU and GPU environments.
-- ⚡ High Performance: Optimized for both speed and accuracy, ensuring efficient **real-time** applications.
-- 📏 Variety of Image Sizes: Models **available** with different input sizes, allowing flexibility based on the task's
+- 🚀 Pre-trained: Models are **ready** for immediate use, no additional training required.
+- 🌟 ONNX: Cross-platform support for **fast inference** on both CPU and GPU environments.
+- ⚡ Performance: Optimized for both speed and accuracy, ensuring efficient **real-time** applications.
+- 📏 Variety: Models **available** with different input sizes, allowing flexibility based on the task's
   performance and speed requirements.
-- 💻 Simple API: Achieve license plate detection with just **one line of code**, enabling rapid integration and
-deployment.
+- 💻 Simple API: Power up your applications with robust model inference in just one line of code.
 
 ## Available Models
 
