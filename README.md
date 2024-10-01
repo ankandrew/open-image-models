@@ -9,7 +9,7 @@
 [![image](https://img.shields.io/pypi/l/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
 
 <p>
-  <img src="./assets/open-image-models-logo.png" alt="Open Image Models Logo" width="650"/>
+  <img src="https://raw.githubusercontent.com/ankandrew/open-image-models/4053f058a80e5ba7edf5d59614e9f8167f83c0f2/assets/open-image-models-logo.png" alt="Open Image Models Logo" width="650"/>
 </p>
 
 <!-- TOC -->
@@ -27,19 +27,26 @@
 
 ## Introduction
 
-We offer **ready-to-use** models for a range of **computer vision** tasks like **detection**, **classification**, and
+**Ready-to-use** models for a range of **computer vision** tasks like **detection**, **classification**, and
 **more**. With **ONNX** support, you get **fast** and **accurate** results right out of the box.
 
 Easily integrate these models into your apps for **real-time** processing—ideal for edge devices, cloud setups, or
 production environments. In **one line of code**, you can have **powerful** model **inference** running!
+
+```python
+from open_image_models import LicensePlateDetector
+
+lp_detector = LicensePlateDetector(detection_model="yolo-v9-t-256-license-plate-end2end")
+lp_detector.predict("path/to/license_plate_image.jpg")
+```
+
+✨ That's it! Powerful license plate detection with just a few lines of code.
 
 ## Features
 
 - 🚀 Pre-trained: Models are **ready** for immediate use, no additional training required.
 - 🌟 ONNX: Cross-platform support for **fast inference** on both CPU and GPU environments.
 - ⚡ Performance: Optimized for both speed and accuracy, ensuring efficient **real-time** applications.
-- 📏 Variety: Models **available** with different input sizes, allowing flexibility based on the task's
-  performance and speed requirements.
 - 💻 Simple API: Power up your applications with robust model inference in just one line of code.
 
 ## Available Models
@@ -48,15 +55,16 @@ production environments. In **one line of code**, you can have **powerful** mode
 
 #### Plate Detection
 
-| Model    | Image Size | Precision (P) | Recall (R) | mAP50 | mAP50-95 | Speed (ms) |
-|----------|------------|---------------|------------|-------|----------|------------|
-| yolov9-t | 640        | 0.955         | 0.91       | 0.959 | 0.75     | XXX        |
-| yolov9-t | 512        | 0.948         | 0.901      | 0.95  | 0.718    | XXX        |
-| yolov9-t | 384        | 0.943         | 0.863      | 0.921 | 0.688    | XXX        |
-| yolov9-t | 256        | 0.937         | 0.797      | 0.858 | 0.606    | XXX        |
+![](https://raw.githubusercontent.com/ankandrew/LocalizadorPatentes/2e765012f69c4fbd8decf998e61ed136004ced24/extra/demo_localizador.gif)
 
-_<sup>[1]</sup> Inference on Mac M1 chip using CPUExecutionProvider. Utilizing CoreMLExecutionProvider accelerates speed
-by 5x._
+| Model    | Image Size | Precision (P) | Recall (R) | mAP50 | mAP50-95 | Speed (ms) <sup>[1]</sup> |
+|----------|------------|---------------|------------|-------|----------|---------------------------|
+| yolov9-t | 640        | 0.955         | 0.91       | 0.959 | 0.75     | 9.96                      |
+| yolov9-t | 512        | 0.948         | 0.901      | 0.95  | 0.718    | 7.10                      |
+| yolov9-t | 384        | 0.943         | 0.863      | 0.921 | 0.688    | 5.76                      |
+| yolov9-t | 256        | 0.937         | 0.797      | 0.858 | 0.606    | 2.65                      |
+
+_<sup>[1]</sup> Inference on a Mac M1._
 
 <details>
   <summary>Usage</summary>
