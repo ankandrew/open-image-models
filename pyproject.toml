@@ -32,9 +32,10 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.10"
 numpy = ">=1.20"
-onnxruntime = ">=1.19.2"
-# Since onnxruntime-gpu depends on CUDA, don't install on macOS
-onnxruntime-gpu = { version = ">=1.19.2", markers = "sys_platform != 'darwin'" }
+# Install onnxruntime-gpu only on systems other than macOS or Raspberry Pi
+onnxruntime-gpu = { version = ">=1.19.2", markers = "sys_platform != 'darwin' and platform_machine != 'armv7l' and platform_machine != 'aarch64' and (platform_system == 'Linux' or platform_system == 'Windows')" }
+# Fallback to onnxruntime for macOS, Raspberry Pi, and other unsupported platforms
+onnxruntime = { version = ">=1.19.2", markers = "sys_platform == 'darwin' or platform_machine == 'armv7l' or platform_machine == 'aarch64'" }
 opencv-python = "*"
 tqdm = "*"
 rich = "*"
