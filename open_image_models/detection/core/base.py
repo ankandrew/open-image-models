@@ -6,17 +6,32 @@ import numpy as np
 
 @dataclass(frozen=True)
 class BoundingBox:
+    """
+    Represents a bounding box with top-left and bottom-right coordinates.
+    """
+
     x1: int
+    """X-coordinate of the top-left corner"""
     y1: int
+    """Y-coordinate of the top-left corner"""
     x2: int
+    """X-coordinate of the bottom-right corner"""
     y2: int
+    """Y-coordinate of the bottom-right corner"""
 
 
 @dataclass(frozen=True)
 class DetectionResult:
+    """
+    Represents the result of an object detection.
+    """
+
     label: str
+    """Detected object label"""
     confidence: float
+    """Confidence score of the detection"""
     bounding_box: BoundingBox
+    """Bounding box of the detected object"""
 
 
 class ObjectDetector(Protocol):
