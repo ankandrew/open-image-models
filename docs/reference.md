@@ -22,5 +22,11 @@ The following components are used across detection pipelines and models:
 - **`DetectionResult`**: Stores label, confidence, and bounding box for a detection.
 - **`ObjectDetector`**: Protocol defining essential methods like `predict`, `show_benchmark`, and `display_predictions`.
 
-??? abstract "Core API Documentation"
-    ::: open_image_models.detection.core.base
+::: open_image_models.detection.core.base
+
+::: open_image_models.detection.core.hub
+    options:
+      group_by_category: false
+      members:
+        - PlateDetectorModel
+
