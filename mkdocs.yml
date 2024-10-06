@@ -34,7 +34,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [ . ]
+          paths: [ open_image_models ]
         options:
           members_order: source
           separate_signature: true
