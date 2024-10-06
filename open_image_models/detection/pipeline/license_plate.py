@@ -85,7 +85,7 @@ class LicensePlateDetector(YoloV9ObjectDetector):
 
         Returns:
             A list of `DetectionResult` for a single image input, or a list of lists of `DetectionResult` for multiple
-            images.
+             images.
 
         Example usage:
 
