@@ -3,10 +3,14 @@ License Plate object detection pipeline.
 """
 
 import logging
+import os
 from collections.abc import Sequence
+from typing import Any, overload
 
+import numpy as np
 import onnxruntime as ort
 
+from open_image_models.detection.core.base import DetectionResult
 from open_image_models.detection.core.hub import PlateDetectorModel, download_model
 from open_image_models.detection.core.yolo_v9.inference import YoloV9ObjectDetector
 
@@ -48,3 +52,51 @@ class LicensePlateDetector(YoloV9ObjectDetector):
             sess_options=sess_options,
         )
         LOGGER.info("Initialized LicensePlateDetector with model %s", detector_model_path)
+
+    # pylint: disable=duplicate-code
+    @overload
+    def predict(self, images: np.ndarray) -> list[DetectionResult]: ...
+
+    @overload
+    def predict(self, images: list[np.ndarray]) -> list[list[DetectionResult]]: ...
+
+    @overload
+    def predict(self, images: str) -> list[DetectionResult]: ...
+
+    @overload
+    def predict(self, images: list[str]) -> list[list[DetectionResult]]: ...
+
+    @overload
+    def predict(self, images: os.PathLike[str]) -> list[list[DetectionResult]]: ...
+
+    @overload
+    def predict(self, images: list[os.PathLike[str]]) -> list[list[DetectionResult]]: ...
+
+    def predict(self, images: Any) -> list[DetectionResult] | list[list[DetectionResult]]:
+        """
+        Perform license plate detection on one or multiple images.
+
+        This method is a specialized version of the `YoloV9ObjectDetector.predict` method,
+        focusing on detecting license plates in images.
+
+        Args:
+            images: A single image as a numpy array, a single image path as a string, a list of images as numpy arrays,
+                    or a list of image file paths.
+
+        Returns:
+            A list of `DetectionResult` for a single image input, or a list of lists of `DetectionResult` for multiple
+            images.
+
+        Example usage:
+
+        ```python
+        from open_image_models import LicensePlateDetector
+
+        lp_detector = LicensePlateDetector(detection_model="yolo-v9-t-384-license-plate-end2end")
+        lp_detector.predict("path/to/license_plate_image.jpg")
+        ```
+
+        Raises:
+            ValueError: If the image could not be loaded or processed.
+        """
+        return super().predict(images)
