@@ -39,7 +39,7 @@ class LicensePlateDetector(YoloV9ObjectDetector):
             detection_model: Detection model to use, see `PlateDetectorModel`.
             conf_thresh: Confidence threshold for filtering predictions.
             providers: Optional sequence of providers in order of decreasing precedence. If not specified, all available
-            providers are used.
+                providers are used.
             sess_options: Advanced session options for ONNX Runtime.
         """
         # Download model if needed

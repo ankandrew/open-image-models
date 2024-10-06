@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 
 import numpy as np
 
@@ -35,7 +35,7 @@ class DetectionResult:
 
 
 class ObjectDetector(Protocol):
-    def predict(self, images) -> list[DetectionResult] | list[list[DetectionResult]]:
+    def predict(self, images: Any) -> list[DetectionResult] | list[list[DetectionResult]]:
         """
         Perform object detection on one or multiple images.
 

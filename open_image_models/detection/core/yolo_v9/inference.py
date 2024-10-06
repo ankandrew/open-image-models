@@ -2,7 +2,7 @@ import logging
 import os
 import pathlib
 from collections.abc import Sequence
-from typing import cast, overload
+from typing import Any, cast, overload
 
 import cv2
 import numpy as np
@@ -85,7 +85,7 @@ class YoloV9ObjectDetector(ObjectDetector):
     @overload
     def predict(self, images: list[os.PathLike[str]]) -> list[list[DetectionResult]]: ...
 
-    def predict(self, images) -> list[DetectionResult] | list[list[DetectionResult]]:
+    def predict(self, images: Any) -> list[DetectionResult] | list[list[DetectionResult]]:
         """
         Perform object detection on one or multiple images.
 
