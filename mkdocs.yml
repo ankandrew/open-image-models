@@ -1,0 +1,67 @@
+site_name: OpenImageModels
+site_author: ankandrew
+site_description: Pre-trained image models using ONNX for fast, out-of-the-box inference.
+repo_url: https://github.com/ankandrew/open-image-models
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - search.suggest
+    - navigation.sections
+    - navigation.expand
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+nav:
+  - Introduction: index.md
+  - Installation: installation.md
+  - Reference: reference.md
+  - Contributing: contributing.md
+plugins:
+  - search
+  - mike:
+      alias_type: symlink
+      canonical_version: latest
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [ . ]
+        options:
+          members_order: source
+          separate_signature: true
+          filters: [ "!^_" ]
+          docstring_options:
+            ignore_init_summary: true
+          show_signature: true
+          show_source: true
+          heading_level: 2
+          show_root_full_path: false
+          merge_init_into_class: true
+          show_signature_annotations: true
+          signature_crossrefs: true
+extra:
+  version:
+    provider: mike
+  generator: false
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+      title: Page contents

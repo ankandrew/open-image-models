@@ -96,41 +96,41 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
               --generate-notes
 
-#  update_docs:
-#    name: Update documentation
-#    needs:
-#      - github-release
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          fetch-depth: 0
-#
-#      - name: Install Poetry using pipx
-#        run: pipx install poetry
-#
-#      - uses: actions/setup-python@v4
-#        with:
-#          python-version: '3.10'
-#          cache: 'poetry'
-#
-#      - name: Configure Git user
-#        run: |
-#          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-#          git config --local user.name "github-actions[bot]"
-#
-#      - name: Retrieve version
-#        id: check-version
-#        uses: samuelcolvin/check-python-version@v4.1
-#        with:
-#          version_file_path: 'pyproject.toml'
-#          skip_env_check: true
-#
-#      - name: Deploy Documentation
-#        run: |
-#          poetry run mike deploy \
-#              --update-aliases \
-#              --push \
-#              --branch docs-site \
-#              ${{ steps.check-version.outputs.VERSION_MAJOR_MINOR }} latest
+  update_docs:
+    name: Update documentation
+    needs:
+      - github-release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Poetry using pipx
+        run: pipx install poetry
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
+
+      - name: Configure Git user
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Retrieve version
+        id: check-version
+        uses: samuelcolvin/check-python-version@v4.1
+        with:
+          version_file_path: 'pyproject.toml'
+          skip_env_check: true
+
+      - name: Deploy Documentation
+        run: |
+          poetry run mike deploy \
+              --update-aliases \
+              --push \
+              --branch docs-site \
+              ${{ steps.check-version.outputs.VERSION_MAJOR_MINOR }} latest
