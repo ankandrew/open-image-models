@@ -7,6 +7,7 @@
 [![Pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 [![image](https://img.shields.io/pypi/l/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
+[![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Spaces-orange)](https://huggingface.co/spaces/ankandrew/open-image-models)
 
 <p>
   <img src="https://raw.githubusercontent.com/ankandrew/open-image-models/4053f058a80e5ba7edf5d59614e9f8167f83c0f2/assets/open-image-models-logo.png" alt="Open Image Models Logo" width="650"/>
