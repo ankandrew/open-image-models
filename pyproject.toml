@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "open-image-models"
-version = "0.1.0"
+version = "0.2.0"
 description = "Pre-trained image models using ONNX for fast, out-of-the-box inference."
 authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
 readme = "README.md"
