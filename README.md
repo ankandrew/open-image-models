@@ -1,17 +1,15 @@
 # Open Image Models
 
 [![Actions status](https://github.com/ankandrew/open-image-models/actions/workflows/main.yaml/badge.svg)](https://github.com/ankandrew/open-image-models/actions)
-[![image](https://img.shields.io/pypi/v/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
+[![GitHub version](https://img.shields.io/github/v/release/ankandrew/fast-alpr)](https://github.com/ankandrew/fast-alpr/releases)
 [![image](https://img.shields.io/pypi/pyversions/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Documentation Status](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://ankandrew.github.io/open-image-models/)
 [![Pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
-[![image](https://img.shields.io/pypi/l/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
+[![ONNX Model](https://img.shields.io/badge/model-ONNX-blue?logo=onnx&logoColor=white)](https://onnx.ai/)
 [![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Spaces-orange)](https://huggingface.co/spaces/ankandrew/open-image-models)
-
-<p>
-  <img src="https://raw.githubusercontent.com/ankandrew/open-image-models/4053f058a80e5ba7edf5d59614e9f8167f83c0f2/assets/open-image-models-logo.png" alt="Open Image Models Logo" width="650"/>
-</p>
+![License](https://img.shields.io/github/license/ankandrew/fast-alpr)
 
 <!-- TOC -->
 * [Open Image Models](#open-image-models)
@@ -22,6 +20,7 @@
       * [Plate Detection](#plate-detection)
     * [Installation](#installation)
     * [Contributing](#contributing)
+    * [Citation](#citation)
 <!-- TOC -->
 
 ---
@@ -58,14 +57,14 @@ lp_detector.predict("path/to/license_plate_image.jpg")
 
 ![](https://raw.githubusercontent.com/ankandrew/LocalizadorPatentes/2e765012f69c4fbd8decf998e61ed136004ced24/extra/demo_localizador.gif)
 
-| Model    | Image Size | Precision (P) | Recall (R) | mAP50 | mAP50-95 | Speed (ms) <sup>[1]</sup> |
-|----------|------------|---------------|------------|-------|----------|---------------------------|
-| yolov9-t | 640        | 0.955         | 0.91       | 0.959 | 0.75     | 9.96                      |
-| yolov9-t | 512        | 0.948         | 0.901      | 0.95  | 0.718    | 7.10                      |
-| yolov9-t | 384        | 0.943         | 0.863      | 0.921 | 0.688    | 5.76                      |
-| yolov9-t | 256        | 0.937         | 0.797      | 0.858 | 0.606    | 2.65                      |
-
-_<sup>[1]</sup> Inference on a Mac M1._
+|                 Model                 | Image Size | Precision (P) | Recall (R) | mAP50 | mAP50-95 |
+|:-------------------------------------:|------------|---------------|------------|-------|----------|
+| `yolo-v9-s-608-license-plate-end2end` | 608        | 0.957         | 0.917      | 0.966 | 0.772    |
+| `yolo-v9-t-640-license-plate-end2end` | 640        | 0.966         | 0.896      | 0.958 | 0.758    |
+| `yolo-v9-t-512-license-plate-end2end` | 512        | 0.955         | 0.901      | 0.948 | 0.724    |
+| `yolo-v9-t-416-license-plate-end2end` | 416        | 0.94          | 0.894      | 0.94  | 0.702    |
+| `yolo-v9-t-384-license-plate-end2end` | 384        | 0.942         | 0.863      | 0.92  | 0.687    |
+| `yolo-v9-t-256-license-plate-end2end` | 256        | 0.937         | 0.797      | 0.858 | 0.606    |
 
 <details>
   <summary>Usage</summary>
@@ -101,6 +100,9 @@ cv2.destroyAllWindows()
 
 </details>
 
+> [!TIP]
+> Checkout the [docs](https://ankandrew.github.io/open-image-models)!
+
 ### Installation
 
 To install open-image-models via pip, use the following command:
@@ -128,3 +130,14 @@ To start contributing or to begin development, you can follow these steps:
     ```shell
     make checks
     ```
+
+### Citation
+
+```
+@article{wang2024yolov9,
+  title={{YOLOv9}: Learning What You Want to Learn Using Programmable Gradient Information},
+  author={Wang, Chien-Yao  and Liao, Hong-Yuan Mark},
+  booktitle={arXiv preprint arXiv:2402.13616},
+  year={2024}
+}
+```
