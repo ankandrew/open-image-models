@@ -16,5 +16,5 @@ def test_model_and_config_urls(model_name):
     Test to check if the model URLs of AVAILABLE_ONNX_MODELS are valid.
     """
     model_url = AVAILABLE_ONNX_MODELS[model_name]
-    response = requests.get(model_url, timeout=5, allow_redirects=True)
+    response = requests.head(model_url, timeout=5, allow_redirects=True)
     assert response.status_code == HTTPStatus.OK, f"URL {model_url} is not accessible, got {response.status_code}"
