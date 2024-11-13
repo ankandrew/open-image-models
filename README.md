@@ -15,12 +15,12 @@
 * [Open Image Models](#open-image-models)
   * [Introduction](#introduction)
   * [Features](#features)
+  * [Installation](#installation)
   * [Available Models](#available-models)
     * [Object Detection](#object-detection)
       * [Plate Detection](#plate-detection)
-    * [Installation](#installation)
-    * [Contributing](#contributing)
-    * [Citation](#citation)
+  * [Contributing](#contributing)
+  * [Citation](#citation)
 <!-- TOC -->
 
 ---
@@ -48,6 +48,14 @@ lp_detector.predict("path/to/license_plate_image.jpg")
 - 🌟 ONNX: Cross-platform support for **fast inference** on both CPU and GPU environments.
 - ⚡ Performance: Optimized for both speed and accuracy, ensuring efficient **real-time** applications.
 - 💻 Simple API: Power up your applications with robust model inference in just one line of code.
+
+## Installation
+
+To install open-image-models via pip, use the following command:
+
+```shell
+pip install open-image-models
+```
 
 ## Available Models
 
@@ -103,15 +111,7 @@ cv2.destroyAllWindows()
 > [!TIP]
 > Checkout the [docs](https://ankandrew.github.io/open-image-models)!
 
-### Installation
-
-To install open-image-models via pip, use the following command:
-
-```shell
-pip install open-image-models
-```
-
-### Contributing
+## Contributing
 
 Contributions to the repo are greatly appreciated. Whether it's bug fixes, feature enhancements, or new models,
 your contributions are warmly welcomed.
@@ -131,7 +131,7 @@ To start contributing or to begin development, you can follow these steps:
     make checks
     ```
 
-### Citation
+## Citation
 
 ```
 @article{wang2024yolov9,
