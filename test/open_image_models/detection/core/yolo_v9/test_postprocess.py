@@ -97,12 +97,12 @@ def test_bounding_box_adjustment(
     ]
     for result, expected_bbox in zip(results, expected_bboxes, strict=False):
         bbox = result.bounding_box
-        assert (
-            bbox.x1 == expected_bbox.x1 and bbox.y1 == expected_bbox.y1
-        ), f"Expected bbox x1={expected_bbox.x1}, y1={expected_bbox.y1}, but got x1={bbox.x1}, y1={bbox.y1}"
-        assert (
-            bbox.x2 == expected_bbox.x2 and bbox.y2 == expected_bbox.y2
-        ), f"Expected bbox x2={expected_bbox.x2}, y2={expected_bbox.y2}, but got x2={bbox.x2}, y2={bbox.y2}"
+        assert bbox.x1 == expected_bbox.x1 and bbox.y1 == expected_bbox.y1, (
+            f"Expected bbox x1={expected_bbox.x1}, y1={expected_bbox.y1}, but got x1={bbox.x1}, y1={bbox.y1}"
+        )
+        assert bbox.x2 == expected_bbox.x2 and bbox.y2 == expected_bbox.y2, (
+            f"Expected bbox x2={expected_bbox.x2}, y2={expected_bbox.y2}, but got x2={bbox.x2}, y2={bbox.y2}"
+        )
 
 
 @pytest.mark.parametrize(

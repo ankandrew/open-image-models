@@ -83,9 +83,9 @@ def test_predict_with_list_of_image_arrays(yolo_detector: YoloV9ObjectDetector, 
     results: list[list[DetectionResult]] = yolo_detector.predict(images)
     assert isinstance(results, list), "Expected the result to be a list of lists"
     assert all(isinstance(res, list) for res in results), "Each result should be a list of DetectionResult"
-    assert all(
-        isinstance(det, DetectionResult) for res in results for det in res
-    ), "All items should be DetectionResult instances"
+    assert all(isinstance(det, DetectionResult) for res in results for det in res), (
+        "All items should be DetectionResult instances"
+    )
 
 
 def test_predict_with_list_of_image_paths(yolo_detector: YoloV9ObjectDetector, mock_image_path: Path) -> None:
@@ -95,9 +95,9 @@ def test_predict_with_list_of_image_paths(yolo_detector: YoloV9ObjectDetector, m
     results: list[list[DetectionResult]] = yolo_detector.predict(image_paths)
     assert isinstance(results, list), "Expected the result to be a list of lists"
     assert all(isinstance(res, list) for res in results), "Each result should be a list of DetectionResult"
-    assert all(
-        isinstance(det, DetectionResult) for res in results for det in res
-    ), "All items should be DetectionResult instances"
+    assert all(isinstance(det, DetectionResult) for res in results for det in res), (
+        "All items should be DetectionResult instances"
+    )
 
 
 def test_predict_with_invalid_image_path(yolo_detector: YoloV9ObjectDetector) -> None:
