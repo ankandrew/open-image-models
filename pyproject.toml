@@ -51,6 +51,7 @@ docs = ["mkdocs-material", "mkdocstrings", "mike"]
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
+requests = "^2.32.3"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
