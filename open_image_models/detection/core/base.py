@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Protocol
+from typing import Any, Optional, Protocol
 
 import numpy as np
 
@@ -18,6 +18,64 @@ class BoundingBox:
     """X-coordinate of the bottom-right corner"""
     y2: int
     """Y-coordinate of the bottom-right corner"""
+
+    @property
+    def width(self) -> int:
+        """Returns the width of the bounding box."""
+        return self.x2 - self.x1
+
+    @property
+    def height(self) -> int:
+        """Returns the height of the bounding box."""
+        return self.y2 - self.y1
+
+    @property
+    def area(self) -> int:
+        """Returns the area of the bounding box."""
+        return self.width * self.height
+
+    @property
+    def center(self) -> tuple[float, float]:
+        """
+        Returns the (x, y) coordinates of the center of the bounding box.
+        """
+        cx = (self.x1 + self.x2) / 2.0
+        cy = (self.y1 + self.y2) / 2.0
+
+        return cx, cy
+
+    def intersection(self, other: "BoundingBox") -> Optional["BoundingBox"]:
+        """
+        Returns the intersection of this bounding box with another bounding box. If they do not intersect, returns None.
+        """
+        x1 = max(self.x1, other.x1)
+        y1 = max(self.y1, other.y1)
+        x2 = min(self.x2, other.x2)
+        y2 = min(self.y2, other.y2)
+
+        if x2 > x1 and y2 > y1:
+            return BoundingBox(x1, y1, x2, y2)
+
+        return None
+
+    def iou(self, other: "BoundingBox") -> float:
+        """
+        Computes the Intersection-over-Union (IoU) between this bounding box and another bounding box.
+        """
+        inter = self.intersection(other)
+
+        if inter is None:
+            return 0.0
+
+        inter_area = inter.area
+        union_area = self.area + other.area - inter_area
+        return inter_area / union_area if union_area > 0 else 0.0
+
+    def to_xywh(self) -> tuple[int, int, int, int]:
+        """
+        Converts bounding box to (x, y, width, height) format, where (x, y) is the top-left corner.
+        """
+        return self.x1, self.y1, self.width, self.height
 
 
 @dataclass(frozen=True)
