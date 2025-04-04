@@ -105,3 +105,50 @@ def test_intersection(bbox1, bbox2, expected_intersection):
 def test_iou(bbox1, bbox2, expected_iou):
     iou_value = bbox1.iou(bbox2)
     assert isclose(iou_value, expected_iou, rel_tol=1e-5)
+
+
+def test_bounding_box_iter():
+    bbox = BoundingBox(10, 20, 30, 40)
+    assert tuple(bbox) == (10, 20, 30, 40)
+
+
+@pytest.mark.parametrize(
+    "bbox, max_width, max_height, expected",
+    [
+        # Some coords are below 0, should be clamped to 0
+        (BoundingBox(-10, -10, 50, 50), 100, 100, BoundingBox(0, 0, 50, 50)),
+        # Coords (x2, y2) exceed the frame size, should be clamped to the frame dimension
+        (BoundingBox(10, 10, 150, 150), 100, 100, BoundingBox(10, 10, 100, 100)),
+        # Both previous cases
+        (BoundingBox(-10, 10, 150, 90), 120, 100, BoundingBox(0, 10, 120, 90)),
+        # Valid bbox, should remain unchanged
+        (BoundingBox(10, 10, 90, 90), 100, 100, BoundingBox(10, 10, 90, 90)),
+    ],
+)
+def test_bounding_box_clamp(bbox, max_width, max_height, expected):
+    assert bbox.clamp(max_width, max_height) == expected
+
+
+@pytest.mark.parametrize(
+    "bbox, frame_width, frame_height, expected_valid",
+    [
+        # Valid bbox inside frame
+        (BoundingBox(10, 20, 30, 40), 50, 50, True),
+        # x1 >= x2
+        (BoundingBox(10, 20, 5, 40), 50, 50, False),
+        # x2 exceeds frame width
+        (BoundingBox(10, 20, 30, 40), 25, 50, False),
+        # y2 exceeds frame height
+        (BoundingBox(10, 20, 30, 40), 50, 35, False),
+        # Exactly fills the frame
+        (BoundingBox(0, 0, 50, 50), 50, 50, True),
+        # Negative coord
+        (BoundingBox(-1, 0, 30, 40), 50, 50, False),
+        # x1 equals x2
+        (BoundingBox(10, 20, 10, 40), 50, 50, False),
+        # y1 equals y2
+        (BoundingBox(10, 20, 30, 20), 50, 50, False),
+    ],
+)
+def test_bounding_box_is_valid(bbox, frame_width, frame_height, expected_valid):
+    assert bbox.is_valid(frame_width, frame_height) == expected_valid
