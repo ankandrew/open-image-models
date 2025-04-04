@@ -88,7 +88,7 @@ select = [
     # pandas-vet
     "PD",
 ]
-ignore = ["N812", "PLR2004", "PD011"]
+ignore = ["N812", "PLR2004", "PD011", "RUF046"]
 fixable = ["ALL"]
 unfixable = []
 
