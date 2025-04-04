@@ -130,6 +130,24 @@ class DetectionResult:
     bounding_box: BoundingBox
     """Bounding box of the detected object"""
 
+    @classmethod
+    def from_detection_data(
+        cls,
+        bbox_data: tuple[int, int, int, int],
+        confidence: float,
+        class_id: str,
+    ) -> "DetectionResult":
+        """
+        Creates a `DetectionResult` instance from bounding box data, confidence, and a class label.
+
+        :param bbox_data: A tuple containing bounding box coordinates (x1, y1, x2, y2).
+        :param confidence: The detection confidence score.
+        :param class_id: The detected class label as a string.
+        :return: A `DetectionResult` instance.
+        """
+        bounding_box = BoundingBox(*bbox_data)
+        return cls(class_id, confidence, bounding_box)
+
 
 class ObjectDetector(Protocol):
     def predict(self, images: Any) -> list[DetectionResult] | list[list[DetectionResult]]:
