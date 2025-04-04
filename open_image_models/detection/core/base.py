@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any, Optional, Protocol
 
@@ -74,8 +75,46 @@ class BoundingBox:
     def to_xywh(self) -> tuple[int, int, int, int]:
         """
         Converts bounding box to (x, y, width, height) format, where (x, y) is the top-left corner.
+
+        :returns: A tuple containing the top-left x and y coordinates, width, and height of the bounding box.
         """
         return self.x1, self.y1, self.width, self.height
+
+    def __iter__(self) -> Iterator[int]:
+        """
+        Allows unpacking of the bounding box coordinates.
+
+        :return: An iterator over the bounding box coordinates (x1, y1, x2, y2).
+        """
+        return iter((self.x1, self.y1, self.x2, self.y2))
+
+    def clamp(self, max_width: int, max_height: int) -> "BoundingBox":
+        """
+        Returns a new `BoundingBox` with coordinates clamped within the range [0, max_width] and [0, max_height].
+
+        :param max_width: The maximum width.
+        :param max_height: The maximum height.
+        :return: A new, clamped `BoundingBox`.
+        """
+        return BoundingBox(
+            x1=max(0, min(self.x1, max_width)),
+            y1=max(0, min(self.y1, max_height)),
+            x2=max(0, min(self.x2, max_width)),
+            y2=max(0, min(self.y2, max_height)),
+        )
+
+    def is_valid(self, frame_width: int, frame_height: int) -> bool:
+        """
+        Checks if the bounding box is valid by ensuring that:
+
+        1. The coordinates are in the correct order (x1 < x2 and y1 < y2).
+        2. The bounding box lies entirely within the frame boundaries.
+
+        :param frame_width: The width of the frame.
+        :param frame_height: The height of the frame.
+        :return: True if the bounding box is valid, False otherwise.
+        """
+        return 0 <= self.x1 < self.x2 <= frame_width and 0 <= self.y1 < self.y2 <= frame_height
 
 
 @dataclass(frozen=True)
@@ -90,6 +129,24 @@ class DetectionResult:
     """Confidence score of the detection"""
     bounding_box: BoundingBox
     """Bounding box of the detected object"""
+
+    @classmethod
+    def from_detection_data(
+        cls,
+        bbox_data: tuple[int, int, int, int],
+        confidence: float,
+        class_id: str,
+    ) -> "DetectionResult":
+        """
+        Creates a `DetectionResult` instance from bounding box data, confidence, and a class label.
+
+        :param bbox_data: A tuple containing bounding box coordinates (x1, y1, x2, y2).
+        :param confidence: The detection confidence score.
+        :param class_id: The detected class label as a string.
+        :return: A `DetectionResult` instance.
+        """
+        bounding_box = BoundingBox(*bbox_data)
+        return cls(class_id, confidence, bounding_box)
 
 
 class ObjectDetector(Protocol):

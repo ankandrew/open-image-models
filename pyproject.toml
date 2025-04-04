@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "open-image-models"
-version = "0.2.1"
+version = "0.2.2"
 description = "Pre-trained image models using ONNX for fast, out-of-the-box inference."
 authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
 readme = "README.md"
@@ -88,7 +88,7 @@ select = [
     # pandas-vet
     "PD",
 ]
-ignore = ["N812", "PLR2004", "PD011"]
+ignore = ["N812", "PLR2004", "PD011", "RUF046"]
 fixable = ["ALL"]
 unfixable = []
 
