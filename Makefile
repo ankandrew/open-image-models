@@ -19,7 +19,7 @@ help:
 
 install:
 	@echo "==> Installing project with dev/test/docs/train dependencies..."
-	poetry install --with dev,test,docs --extras train
+	poetry install --with dev,test,docs
 
 .PHONY: format
 format:
