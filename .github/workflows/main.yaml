@@ -29,7 +29,7 @@ jobs:
           cache: 'poetry'
 
       - name: Install dependencies
-        run: poetry install --all-extras
+        run: make install
 
       - name: Check format
         run: make check_format
