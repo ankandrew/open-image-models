@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "open-image-models"
-version = "0.2.2"
+version = "0.3.0"
 description = "Pre-trained image models using ONNX for fast, out-of-the-box inference."
 authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
 readme = "README.md"
@@ -31,23 +31,23 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-numpy = ">=1.20"
-# Install onnxruntime-gpu only on systems other than macOS or Raspberry Pi
-onnxruntime-gpu = { version = ">=1.19.2", markers = "sys_platform != 'darwin' and platform_machine != 'armv7l' and platform_machine != 'aarch64' and (platform_system == 'Linux' or platform_system == 'Windows')" }
-# Fallback to onnxruntime for macOS, Raspberry Pi, and other unsupported platforms
-onnxruntime = { version = ">=1.19.2", markers = "sys_platform == 'darwin' or platform_machine == 'armv7l' or platform_machine == 'aarch64'" }
+numpy = "*"
+onnxruntime = { version = ">=1.19.2" }
 opencv-python = "*"
 tqdm = "*"
 rich = "*"
 
-
-# Optional packages for creating the docs
-mkdocs-material = { version = "*", optional = true }
-mkdocstrings = { version = "*", extras = ["python"], optional = true }
-mike = { version = "*", optional = true }
+# ONNX package variants (for different hardware accelerator)
+onnxruntime-gpu = { version = "*", optional = true }
+onnxruntime-openvino = { version = "*", optional = true }
+onnxruntime-directml = { version = "*", optional = true }
+onnxruntime-qnn = { version = "*", optional = true }
 
 [tool.poetry.extras]
-docs = ["mkdocs-material", "mkdocstrings", "mike"]
+gpu = ["onnxruntime-gpu"]
+openvino = ["onnxruntime-openvino"]
+directml = ["onnxruntime-directml"]
+qnn = ["onnxruntime-qnn"]
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
@@ -57,6 +57,11 @@ requests = "^2.32.3"
 mypy = "*"
 ruff = "*"
 pylint = "*"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs-material = "*"
+mkdocstrings = { version = "*", extras = ["python"] }
+mike = "*"
 
 [tool.ruff]
 line-length = 120
