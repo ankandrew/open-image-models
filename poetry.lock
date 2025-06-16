@@ -18,7 +18,7 @@ typing-extensions = {version = ">=4", markers = "python_version < \"3.11\""}
 name = "babel"
 version = "2.17.0"
 description = "Internationalization utilities"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "babel-2.17.0-py3-none-any.whl", hash = "sha256:4d0b53093fdfb4b21c92b5213dba5a1b23885afa8383709427046b21c366e5f2"},
@@ -32,7 +32,7 @@ dev = ["backports.zoneinfo", "freezegun (>=1.0,<2.0)", "jinja2 (>=3.0)", "pytest
 name = "backrefs"
 version = "5.8"
 description = "A wrapper around re and regex that adds additional back references."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "backrefs-5.8-py310-none-any.whl", hash = "sha256:c67f6638a34a5b8730812f5101376f9d41dc38c43f1fdc35cb54700f6ed4465d"},
@@ -162,7 +162,7 @@ files = [
 name = "click"
 version = "8.2.1"
 description = "Composable command line interface toolkit"
-optional = true
+optional = false
 python-versions = ">=3.10"
 files = [
     {file = "click-8.2.1-py3-none-any.whl", hash = "sha256:61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b"},
@@ -247,7 +247,7 @@ files = [
 name = "ghp-import"
 version = "2.1.0"
 description = "Copy your docs directly to the gh-pages branch."
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "ghp-import-2.1.0.tar.gz", hash = "sha256:9c535c4c61193c2df8871222567d7fd7e5014d835f97dc7b7439069e2413d343"},
@@ -264,7 +264,7 @@ dev = ["flake8", "markdown", "twine", "wheel"]
 name = "griffe"
 version = "1.7.3"
 description = "Signatures for entire Python programs. Extract the structure, the frame, the skeleton of your project, to generate API documentation or find breaking changes in your API."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "griffe-1.7.3-py3-none-any.whl", hash = "sha256:c6b3ee30c2f0f17f30bcdef5068d6ab7a2a4f1b8bf1a3e74b56fffd21e1c5f75"},
@@ -306,7 +306,7 @@ all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2
 name = "importlib-metadata"
 version = "8.7.0"
 description = "Read metadata from Python packages"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "importlib_metadata-8.7.0-py3-none-any.whl", hash = "sha256:e5dd1551894c77868a30651cef00984d50e1002d06942a7101d34870c5f02afd"},
@@ -329,7 +329,7 @@ type = ["pytest-mypy"]
 name = "importlib-resources"
 version = "6.5.2"
 description = "Read resources from Python packages"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "importlib_resources-6.5.2-py3-none-any.whl", hash = "sha256:789cfdc3ed28c78b67a06acb8126751ced69a3d5f79c095a98298cd8a760ccec"},
@@ -374,7 +374,7 @@ plugins = ["setuptools"]
 name = "jinja2"
 version = "3.1.6"
 description = "A very fast and expressive template engine."
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"},
@@ -391,7 +391,7 @@ i18n = ["Babel (>=2.7)"]
 name = "markdown"
 version = "3.8"
 description = "Python implementation of John Gruber's Markdown."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "markdown-3.8-py3-none-any.whl", hash = "sha256:794a929b79c5af141ef5ab0f2f642d0f7b1872981250230e72682346f7cc90dc"},
@@ -430,7 +430,7 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 name = "markupsafe"
 version = "3.0.2"
 description = "Safely add untrusted strings to HTML/XML markup."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "MarkupSafe-3.0.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:7e94c425039cde14257288fd61dcfb01963e658efbc0ff54f5306b06054700f8"},
@@ -522,7 +522,7 @@ files = [
 name = "mergedeep"
 version = "1.3.4"
 description = "A deep merge function for 🐍."
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "mergedeep-1.3.4-py3-none-any.whl", hash = "sha256:70775750742b25c0d8f36c55aed03d24c3384d17c951b3175d898bd778ef0307"},
@@ -533,7 +533,7 @@ files = [
 name = "mike"
 version = "2.1.3"
 description = "Manage multiple versions of your MkDocs-powered documentation"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "mike-2.1.3-py3-none-any.whl", hash = "sha256:d90c64077e84f06272437b464735130d380703a76a5738b152932884c60c062a"},
@@ -558,7 +558,7 @@ test = ["coverage", "flake8 (>=3.0)", "flake8-quotes", "shtab"]
 name = "mkdocs"
 version = "1.6.1"
 description = "Project documentation with Markdown."
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "mkdocs-1.6.1-py3-none-any.whl", hash = "sha256:db91759624d1647f3f34aa0c3f327dd2601beae39a366d6e064c03468d35c20e"},
@@ -588,7 +588,7 @@ min-versions = ["babel (==2.9.0)", "click (==7.0)", "colorama (==0.4)", "ghp-imp
 name = "mkdocs-autorefs"
 version = "1.4.2"
 description = "Automatically link across pages in MkDocs."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "mkdocs_autorefs-1.4.2-py3-none-any.whl", hash = "sha256:83d6d777b66ec3c372a1aad4ae0cf77c243ba5bcda5bf0c6b8a2c5e7a3d89f13"},
@@ -604,7 +604,7 @@ mkdocs = ">=1.1"
 name = "mkdocs-get-deps"
 version = "0.2.0"
 description = "MkDocs extension that lists all dependencies according to a mkdocs.yml file"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "mkdocs_get_deps-0.2.0-py3-none-any.whl", hash = "sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134"},
@@ -620,7 +620,7 @@ pyyaml = ">=5.1"
 name = "mkdocs-material"
 version = "9.6.14"
 description = "Documentation that simply works"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "mkdocs_material-9.6.14-py3-none-any.whl", hash = "sha256:3b9cee6d3688551bf7a8e8f41afda97a3c39a12f0325436d76c86706114b721b"},
@@ -649,7 +649,7 @@ recommended = ["mkdocs-minify-plugin (>=0.7,<1.0)", "mkdocs-redirects (>=1.2,<2.
 name = "mkdocs-material-extensions"
 version = "1.3.1"
 description = "Extension pack for Python Markdown and MkDocs Material."
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "mkdocs_material_extensions-1.3.1-py3-none-any.whl", hash = "sha256:adff8b62700b25cb77b53358dad940f3ef973dd6db797907c49e3c2ef3ab4e31"},
@@ -660,7 +660,7 @@ files = [
 name = "mkdocstrings"
 version = "0.29.1"
 description = "Automatic documentation from sources, for MkDocs."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "mkdocstrings-0.29.1-py3-none-any.whl", hash = "sha256:37a9736134934eea89cbd055a513d40a020d87dfcae9e3052c2a6b8cd4af09b6"},
@@ -685,7 +685,7 @@ python-legacy = ["mkdocstrings-python-legacy (>=0.2.1)"]
 name = "mkdocstrings-python"
 version = "1.16.12"
 description = "A Python handler for mkdocstrings."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "mkdocstrings_python-1.16.12-py3-none-any.whl", hash = "sha256:22ded3a63b3d823d57457a70ff9860d5a4de9e8b1e482876fc9baabaf6f5f374"},
@@ -880,10 +880,31 @@ protobuf = "*"
 sympy = "*"
 
 [[package]]
+name = "onnxruntime-directml"
+version = "1.22.0"
+description = "ONNX Runtime is a runtime accelerator for Machine Learning models"
+optional = true
+python-versions = ">=3.10"
+files = [
+    {file = "onnxruntime_directml-1.22.0-cp310-cp310-win_amd64.whl", hash = "sha256:1eddf2d05b6f28efa529e704c6cf515331df8ee84fd293e055e4a9a99a3ab51d"},
+    {file = "onnxruntime_directml-1.22.0-cp311-cp311-win_amd64.whl", hash = "sha256:4c611cb4b8588356eef4c02552e0a50117d558223dcfbdfe1b30b413e9a6feb0"},
+    {file = "onnxruntime_directml-1.22.0-cp312-cp312-win_amd64.whl", hash = "sha256:f8fc1a48b7fb134e34f8f138719a27d1bf6895611728b593fd86bc7c05b848a1"},
+    {file = "onnxruntime_directml-1.22.0-cp313-cp313-win_amd64.whl", hash = "sha256:35cde5043450cab642ac71a1ec7bded58e5ed5dcc867930a179cc48a501af235"},
+]
+
+[package.dependencies]
+coloredlogs = "*"
+flatbuffers = "*"
+numpy = ">=1.21.6"
+packaging = "*"
+protobuf = "*"
+sympy = "*"
+
+[[package]]
 name = "onnxruntime-gpu"
 version = "1.22.0"
 description = "ONNX Runtime is a runtime accelerator for Machine Learning models"
-optional = false
+optional = true
 python-versions = ">=3.10"
 files = [
     {file = "onnxruntime_gpu-1.22.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:965da7d33a54917e8e5176f292cc22640819f328370f4fb86087908745b03708"},
@@ -908,6 +929,55 @@ sympy = "*"
 [package.extras]
 cuda = ["nvidia-cuda-nvrtc-cu12 (>=12.0,<13.0)", "nvidia-cuda-runtime-cu12 (>=12.0,<13.0)", "nvidia-cufft-cu12 (>=11.0,<12.0)", "nvidia-curand-cu12 (>=10.0,<11.0)"]
 cudnn = ["nvidia-cudnn-cu12 (>=9.0,<10.0)"]
+
+[[package]]
+name = "onnxruntime-openvino"
+version = "1.22.0"
+description = "ONNX Runtime is a runtime accelerator for Machine Learning models"
+optional = true
+python-versions = ">=3.10"
+files = [
+    {file = "onnxruntime_openvino-1.22.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:c89fa637a3f0515aa9f9b249f050e4361c654bf0b1ddb95b65a9b723c5dcda74"},
+    {file = "onnxruntime_openvino-1.22.0-cp310-cp310-win_amd64.whl", hash = "sha256:83f5156ebe595d9c8f33cae034c98f5a033c8638446e0dce45fa1359d532ac76"},
+    {file = "onnxruntime_openvino-1.22.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:693c4e63fb6ca8c10ebd4f67a87701f3f0628eb81f40960bdf7ae5c61b6aefdb"},
+    {file = "onnxruntime_openvino-1.22.0-cp311-cp311-win_amd64.whl", hash = "sha256:bf3953915244ed54c03ece5542d93e45526a6dc776cd8919c179759aae0d9e76"},
+    {file = "onnxruntime_openvino-1.22.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:000811fd42b027663cd15fcbbde049871164f7353ed28cab0219a1c10eef8e6d"},
+    {file = "onnxruntime_openvino-1.22.0-cp312-cp312-win_amd64.whl", hash = "sha256:092446f82e52ab90d117120d321c7a726e58d77aab36d8796c29b7aa918ddb33"},
+    {file = "onnxruntime_openvino-1.22.0-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:a9879cfeb777a74b157383650aaf8762854a564f974ecdad55c7aa5962c7c534"},
+    {file = "onnxruntime_openvino-1.22.0-cp313-cp313-win_amd64.whl", hash = "sha256:329ddda0093cb2702dc5774075d3f5520e7cb9b478a420ec7183ee45426d7027"},
+]
+
+[package.dependencies]
+coloredlogs = "*"
+flatbuffers = "*"
+numpy = ">=1.21.6"
+packaging = "*"
+protobuf = "*"
+sympy = "*"
+
+[[package]]
+name = "onnxruntime-qnn"
+version = "1.22.0"
+description = "ONNX Runtime is a runtime accelerator for Machine Learning models"
+optional = true
+python-versions = ">=3.10"
+files = [
+    {file = "onnxruntime_qnn-1.22.0-cp310-cp310-win_amd64.whl", hash = "sha256:7332cfbdf074858e2bcd8d40765bbfac5e08c5f2f6e84057bfa3f603b6710d03"},
+    {file = "onnxruntime_qnn-1.22.0-cp311-cp311-win_amd64.whl", hash = "sha256:87e8be267744a38c30cd44730a648587de1bc6ae1ff8564029bfe53c0a2f1b3e"},
+    {file = "onnxruntime_qnn-1.22.0-cp311-cp311-win_arm64.whl", hash = "sha256:08dd3180fc0fd39af225147a7cb958ac079bef8b8a1a2d7fb2280504ced259c1"},
+    {file = "onnxruntime_qnn-1.22.0-cp312-cp312-win_amd64.whl", hash = "sha256:9931ecfee8f410c5f456a5fb80dcde26bc90ccd848efd101e9617978bf6bd144"},
+    {file = "onnxruntime_qnn-1.22.0-cp312-cp312-win_arm64.whl", hash = "sha256:aae0b26a589f125c1374a1bd2e4128fbcb6944c4c5626100b9b2fe5f42d92ff9"},
+    {file = "onnxruntime_qnn-1.22.0-cp313-cp313-win_amd64.whl", hash = "sha256:d6ec41f71eb268cd4047a5bf908764b3b203e75afa9c9ceffa2bd449467f570a"},
+    {file = "onnxruntime_qnn-1.22.0-cp313-cp313-win_arm64.whl", hash = "sha256:9f99833ded779dc65ada3d8e9469e537d7e7fd2f1cbdbb6d33a1c5fd651df306"},
+]
+
+[package.dependencies]
+coloredlogs = "*"
+flatbuffers = "*"
+numpy = ">=1.21.6"
+packaging = "*"
+protobuf = "*"
+sympy = "*"
 
 [[package]]
 name = "opencv-python"
@@ -948,7 +1018,7 @@ files = [
 name = "paginate"
 version = "0.5.7"
 description = "Divides large result sets into pages for easier browsing"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "paginate-0.5.7-py2.py3-none-any.whl", hash = "sha256:b885e2af73abcf01d9559fd5216b57ef722f8c42affbb63942377668e35c7591"},
@@ -1066,7 +1136,7 @@ testutils = ["gitpython (>3)"]
 name = "pymdown-extensions"
 version = "10.15"
 description = "Extension pack for Python Markdown."
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "pymdown_extensions-10.15-py3-none-any.whl", hash = "sha256:46e99bb272612b0de3b7e7caf6da8dd5f4ca5212c0b273feb9304e236c484e5f"},
@@ -1084,7 +1154,7 @@ extra = ["pygments (>=2.19.1)"]
 name = "pyparsing"
 version = "3.2.3"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "pyparsing-3.2.3-py3-none-any.whl", hash = "sha256:a749938e02d6fd0b59b356ca504a24982314bb090c383e3cf201c95ef7e2bfcf"},
@@ -1135,7 +1205,7 @@ dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "requests
 name = "python-dateutil"
 version = "2.9.0.post0"
 description = "Extensions to the standard Python datetime module"
-optional = true
+optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 files = [
     {file = "python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3"},
@@ -1149,7 +1219,7 @@ six = ">=1.5"
 name = "pyyaml"
 version = "6.0.2"
 description = "YAML parser and emitter for Python"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "PyYAML-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:0a9a2848a5b7feac301353437eb7d5957887edbf81d56e903999a75a3d743086"},
@@ -1211,7 +1281,7 @@ files = [
 name = "pyyaml-env-tag"
 version = "1.1"
 description = "A custom YAML tag for referencing environment variables in YAML files."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "pyyaml_env_tag-1.1-py3-none-any.whl", hash = "sha256:17109e1a528561e32f026364712fee1264bc2ea6715120891174ed1b980d2e04"},
@@ -1292,7 +1362,7 @@ files = [
 name = "six"
 version = "1.17.0"
 description = "Python 2 and 3 compatibility utilities"
-optional = true
+optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 files = [
     {file = "six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"},
@@ -1421,7 +1491,7 @@ zstd = ["zstandard (>=0.18.0)"]
 name = "verspec"
 version = "0.1.0"
 description = "Flexible version handling"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "verspec-0.1.0-py3-none-any.whl", hash = "sha256:741877d5633cc9464c45a469ae2a31e801e6dbbaa85b9675d481cda100f11c31"},
@@ -1435,7 +1505,7 @@ test = ["coverage", "flake8 (>=3.7)", "mypy", "pretend", "pytest"]
 name = "watchdog"
 version = "6.0.0"
 description = "Filesystem events monitoring"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "watchdog-6.0.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d1cdb490583ebd691c012b3d6dae011000fe42edb7a82ece80965b42abd61f26"},
@@ -1477,7 +1547,7 @@ watchmedo = ["PyYAML (>=3.10)"]
 name = "zipp"
 version = "3.23.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "zipp-3.23.0-py3-none-any.whl", hash = "sha256:071652d6115ed432f5ce1d34c336c0adfd6a884660d1e9712a256d3d3bd4b14e"},
@@ -1493,9 +1563,12 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more_it
 type = ["pytest-mypy"]
 
 [extras]
-docs = ["mike", "mkdocs-material", "mkdocstrings"]
+directml = ["onnxruntime-directml"]
+gpu = ["onnxruntime-gpu"]
+openvino = ["onnxruntime-openvino"]
+qnn = ["onnxruntime-qnn"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "43e6fabb461803715afe7cf3bebd2b59d85d5c464209a77729f2e554f47d4b66"
+content-hash = "01fbe5083c65987aae67d5e0ddeb3d1fd43f046658550712c1c96fb44899d3e5"
