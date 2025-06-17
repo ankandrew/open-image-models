@@ -57,6 +57,7 @@ requests = "^2.32.3"
 mypy = "*"
 ruff = "*"
 pylint = "*"
+yamllint = "*"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "*"
