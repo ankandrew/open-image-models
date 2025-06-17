@@ -35,19 +35,19 @@ plugins:
       handlers:
         python:
           paths: [ open_image_models ]
-        options:
-          members_order: source
-          separate_signature: true
-          filters: [ "!^_" ]
-          docstring_options:
-            ignore_init_summary: true
-          show_signature: true
-          show_source: true
-          heading_level: 2
-          show_root_full_path: false
-          merge_init_into_class: true
-          show_signature_annotations: true
-          signature_crossrefs: true
+          options:
+            members_order: source
+            separate_signature: true
+            filters: [ "!^_" ]
+            docstring_options:
+              ignore_init_summary: true
+            show_signature: true
+            show_source: true
+            heading_level: 2
+            show_root_full_path: false
+            merge_init_into_class: true
+            show_signature_annotations: true
+            signature_crossrefs: true
 extra:
   version:
     provider: mike
