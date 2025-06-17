@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "open-image-models"
-version = "0.3.0"
+version = "0.3.1"
 description = "Pre-trained image models using ONNX for fast, out-of-the-box inference."
 authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
 readme = "README.md"
@@ -57,6 +57,7 @@ requests = "^2.32.3"
 mypy = "*"
 ruff = "*"
 pylint = "*"
+yamllint = "*"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "*"

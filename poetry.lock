@@ -1544,6 +1544,24 @@ files = [
 watchmedo = ["PyYAML (>=3.10)"]
 
 [[package]]
+name = "yamllint"
+version = "1.37.1"
+description = "A linter for YAML files."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "yamllint-1.37.1-py3-none-any.whl", hash = "sha256:364f0d79e81409f591e323725e6a9f4504c8699ddf2d7263d8d2b539cd66a583"},
+    {file = "yamllint-1.37.1.tar.gz", hash = "sha256:81f7c0c5559becc8049470d86046b36e96113637bcbe4753ecef06977c00245d"},
+]
+
+[package.dependencies]
+pathspec = ">=0.5.3"
+pyyaml = "*"
+
+[package.extras]
+dev = ["doc8", "flake8", "flake8-import-order", "rstcheck[sphinx]", "sphinx"]
+
+[[package]]
 name = "zipp"
 version = "3.23.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
@@ -1571,4 +1589,4 @@ qnn = ["onnxruntime-qnn"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "01fbe5083c65987aae67d5e0ddeb3d1fd43f046658550712c1c96fb44899d3e5"
+content-hash = "60e597a33cf4fd0d5c57e47a2e7d89af3c2c37352cc358377f9ec3eee1c2bfaf"
