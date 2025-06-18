@@ -21,7 +21,7 @@ help:
 
 install:
 	@echo "==> Installing project with dev/test/docs/train dependencies..."
-	poetry install --with dev,test,docs
+	poetry install --with dev,test,docs --extras=onnx
 
 .PHONY: format
 format:

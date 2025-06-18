@@ -32,26 +32,27 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.10"
 numpy = "*"
-onnxruntime = { version = ">=1.19.2" }
 opencv-python = "*"
 tqdm = "*"
 rich = "*"
 
 # ONNX package variants (for different hardware accelerator)
-onnxruntime-gpu = { version = "*", optional = true }
-onnxruntime-openvino = { version = "*", optional = true }
-onnxruntime-directml = { version = "*", optional = true }
-onnxruntime-qnn = { version = "*", optional = true }
+onnxruntime = { version = ">=1.19.2", optional = true }
+onnxruntime-gpu = { version = ">=1.19.2", optional = true }
+onnxruntime-openvino = { version = ">=1.19.2", optional = true }
+onnxruntime-directml = { version = ">=1.19.2", optional = true }
+onnxruntime-qnn = { version = ">=1.19.2", optional = true }
 
 [tool.poetry.extras]
-gpu = ["onnxruntime-gpu"]
-openvino = ["onnxruntime-openvino"]
-directml = ["onnxruntime-directml"]
-qnn = ["onnxruntime-qnn"]
+onnx = ["onnxruntime"]
+onnx-gpu = ["onnxruntime-gpu"]
+onnx-openvino = ["onnxruntime-openvino"]
+onnx-directml = ["onnxruntime-directml"]
+onnx-qnn = ["onnxruntime-qnn"]
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
-requests = "^2.32.3"
+requests = "*"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
