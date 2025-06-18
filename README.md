@@ -1,6 +1,6 @@
 # Open Image Models
 
-[![Actions status](https://github.com/ankandrew/open-image-models/actions/workflows/main.yaml/badge.svg)](https://github.com/ankandrew/open-image-models/actions)
+[![Actions status](https://github.com/ankandrew/open-image-models/actions/workflows/release.yaml/badge.svg)](https://github.com/ankandrew/open-image-models/actions)
 [![GitHub version](https://img.shields.io/github/v/release/ankandrew/open-image-models)](https://github.com/ankandrew/open-image-models/releases)
 [![image](https://img.shields.io/pypi/pyversions/open-image-models.svg)](https://pypi.python.org/pypi/open-image-models)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
