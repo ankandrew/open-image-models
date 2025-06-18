@@ -1,10 +1,10 @@
 ### Installation
 
 ```shell
-pip install open-image-models
+pip install open-image-models[onnx]
 ```
 
 ???+ info
-    The models currently run using the ONNX framework. Depending on your system, you may want to install support for GPU
-    or other hardware accelerators. Use optional extras like `gpu`, `openvino`, `directml`, or `qnn` to tailor the
-    installation to your machine. For example: `pip install open-image-models[gpu]`.
+    The models currently run using the ONNX framework. For hardware acceleration, you can use one of the following
+    extras instead: `onnx-gpu`, `onnx-openvino`, `onnx-directml`, or `onnx-qnn`.
+    Example: `pip install open-image-models[onnx-gpu]`

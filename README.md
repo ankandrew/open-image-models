@@ -54,12 +54,12 @@ lp_detector.predict("path/to/license_plate_image.jpg")
 To install open-image-models via pip, use the following command:
 
 ```shell
-pip install open-image-models
+pip install open-image-models[onnx]
 ```
 
 > [!NOTE]
-> To install with GPU or hardware acceleration support, use: `pip install open-image-models[gpu]`. The following
-> optional extras are available: `gpu`, `openvino`, `directml`, and `qnn`.
+> For hardware acceleration, you can use one of the following extras instead: `onnx-gpu`, `onnx-openvino`,
+> `onnx-directml`, or `onnx-qnn`. Example: `pip install open-image-models[onnx-gpu]`
 
 ## Available Models
 
