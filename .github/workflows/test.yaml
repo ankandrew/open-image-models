@@ -2,9 +2,9 @@ name: Test
 on:
   workflow_call:  # Allows this workflow to be called by other workflows
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   test:

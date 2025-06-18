@@ -1,13 +1,8 @@
 name: Test and Deploy
 on:
   push:
-    branches:
-      - main
-    tags:
-      - 'v*'
-  pull_request:
-    branches:
-      - '**'
+    branches: [ main ]
+    tags: [ 'v*' ]
 jobs:
   test:
     uses: ./.github/workflows/test.yaml

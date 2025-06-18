@@ -1,5 +1,14 @@
 name: Lint GitHub Actions workflows
-on: [ push, pull_request ]
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**/*.yaml'
+      - '.github/workflows/**/*.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/**/*.yaml'
+      - '.github/workflows/**/*.yml'
 
 jobs:
   actionlint:
