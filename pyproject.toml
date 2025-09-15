@@ -1,10 +1,10 @@
-[tool.poetry]
+[project]
 name = "open-image-models"
 version = "0.4.0"
 description = "Pre-trained image models using ONNX for fast, out-of-the-box inference."
-authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
+authors = [{ name = "ankandrew", email = "61120139+ankandrew@users.noreply.github.com" }]
+requires-python = ">=3.10"
 readme = "README.md"
-repository = "https://github.com/ankandrew/open-image-models"
 license = "MIT"
 keywords = [
     "image-processing",
@@ -28,42 +28,50 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+dependencies = [
+    "numpy",
+    "opencv-python",
+    "tqdm",
+    "rich",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-numpy = "*"
-opencv-python = "*"
-tqdm = "*"
-rich = "*"
+[project.optional-dependencies]
+onnx = ["onnxruntime>=1.19.2"]
+onnx-gpu = ["onnxruntime-gpu>=1.19.2"]
+onnx-openvino = ["onnxruntime-openvino>=1.19.2"]
+onnx-directml = ["onnxruntime-directml>=1.19.2"]
+onnx-qnn = ["onnxruntime-qnn>=1.19.2"]
 
-# ONNX package variants (for different hardware accelerator)
-onnxruntime = { version = ">=1.19.2", optional = true }
-onnxruntime-gpu = { version = ">=1.19.2", optional = true }
-onnxruntime-openvino = { version = ">=1.19.2", optional = true }
-onnxruntime-directml = { version = ">=1.19.2", optional = true }
-onnxruntime-qnn = { version = ">=1.19.2", optional = true }
+[project.urls]
+Repository = "https://github.com/ankandrew/open-image-models"
 
-[tool.poetry.extras]
-onnx = ["onnxruntime"]
-onnx-gpu = ["onnxruntime-gpu"]
-onnx-openvino = ["onnxruntime-openvino"]
-onnx-directml = ["onnxruntime-directml"]
-onnx-qnn = ["onnxruntime-qnn"]
+[dependency-groups]
+test = [
+    "pytest",
+    "requests",
+]
+dev = [
+    "mypy",
+    "ruff",
+    "pylint",
+    "yamllint",
+]
+docs = [
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mike",
+]
 
-[tool.poetry.group.test.dependencies]
-pytest = "*"
-requests = "*"
+[tool.uv]
+default-groups = [
+    "test",
+    "dev",
+    "docs",
+]
 
-[tool.poetry.group.dev.dependencies]
-mypy = "*"
-ruff = "*"
-pylint = "*"
-yamllint = "*"
-
-[tool.poetry.group.docs.dependencies]
-mkdocs-material = "*"
-mkdocstrings = { version = "*", extras = ["python"] }
-mike = "*"
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 120
@@ -136,7 +144,3 @@ notes = ["FIXME", "XXX"]
 
 [tool.pylint.basic]
 no-docstring-rgx = "^__|^test_"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
