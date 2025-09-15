@@ -1,6 +1,6 @@
 [project]
 name = "open-image-models"
-version = "0.4.0"
+version = "0.5.0"
 description = "Pre-trained image models using ONNX for fast, out-of-the-box inference."
 authors = [{ name = "ankandrew", email = "61120139+ankandrew@users.noreply.github.com" }]
 requires-python = ">=3.10"
