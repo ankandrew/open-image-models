@@ -64,7 +64,7 @@ lint: ruff yamllint pylint mypy
 .PHONY: test
 test:
 	@echo "=====> Running tests..."
-	@poetry run pytest test/
+	@uv run pytest test/
 
 .PHONY: clean
 clean:
