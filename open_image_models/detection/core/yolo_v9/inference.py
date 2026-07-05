@@ -121,10 +121,10 @@ class YoloV9ObjectDetector(ObjectDetector):
             if all(isinstance(img, str | os.PathLike) for img in images):
                 # List of image paths
                 loaded_images: list[np.ndarray] = []
-                for idx, img_path in enumerate(images):
+                for img_path in images:
                     img = cv2.imread(str(img_path))
                     if img is None:
-                        raise ValueError(f"Failed to load image at path: {images[idx]}")
+                        raise ValueError(f"Failed to load image at path: {img_path}")
                     loaded_images.append(img)
                 return [self._predict(img) for img in loaded_images]
             raise TypeError("List must contain either all numpy arrays or all image file paths.")
