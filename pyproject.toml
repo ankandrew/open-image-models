@@ -43,7 +43,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-onnx = ["onnxruntime>=1.19.2"]
+onnx = [
+    "onnxruntime>=1.19.2,<1.24; python_version < '3.11'",
+    "onnxruntime>=1.19.2; python_version >= '3.11'",
+]
 onnx-gpu = ["onnxruntime-gpu>=1.19.2"]
 onnx-openvino = ["onnxruntime-openvino>=1.19.2"]
 onnx-directml = ["onnxruntime-directml>=1.19.2"]
