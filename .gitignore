@@ -163,3 +163,7 @@ train_val_set/
 
 # IDEA
 .idea/
+
+# Local tooling and OS metadata
+.pylint-cache/
+.DS_Store
