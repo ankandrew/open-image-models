@@ -9,7 +9,7 @@ import pytest
 
 from open_image_models.detection.core.base import DetectionResult
 from open_image_models.detection.core.hub import download_model
-from open_image_models.detection.core.yolo_v9.inference import YoloV9ObjectDetector
+from open_image_models.detection.core.yolo_v9.inference import YoloV9Detector
 from test.assets import ASSETS_DIR
 
 
@@ -55,28 +55,28 @@ def _mock_image_path() -> Iterator[Path]:
 
 
 @pytest.fixture(name="yolo_detector", scope="module")
-def _yolo_detector(model_path: Path, mock_class_labels: list[str]) -> YoloV9ObjectDetector:
-    """Fixture to initialize the YoloV9ObjectDetector with a mock model path and class labels."""
-    return YoloV9ObjectDetector(
+def _yolo_detector(model_path: Path, mock_class_labels: list[str]) -> YoloV9Detector:
+    """Fixture to initialize a YOLOv9 detector with a mock model path and class labels."""
+    return YoloV9Detector(
         model_path=model_path, class_labels=mock_class_labels, conf_thresh=0.25, providers=["CPUExecutionProvider"]
     )
 
 
-def test_predict_with_image_array(yolo_detector: YoloV9ObjectDetector, mock_image: np.ndarray) -> None:
+def test_predict_with_image_array(yolo_detector: YoloV9Detector, mock_image: np.ndarray) -> None:
     """Test the predict method with a single image array."""
     result: list[DetectionResult] = yolo_detector.predict(mock_image)
     assert isinstance(result, list), "Expected the result to be a list"
     assert all(isinstance(det, DetectionResult) for det in result), "All items should be DetectionResult instances"
 
 
-def test_predict_with_image_path(yolo_detector: YoloV9ObjectDetector, mock_image_path: Path) -> None:
+def test_predict_with_image_path(yolo_detector: YoloV9Detector, mock_image_path: Path) -> None:
     """Test the predict method with a single image path."""
     result: list[DetectionResult] = yolo_detector.predict(str(mock_image_path))
     assert isinstance(result, list), "Expected the result to be a list"
     assert all(isinstance(det, DetectionResult) for det in result), "All items should be DetectionResult instances"
 
 
-def test_predict_with_list_of_image_arrays(yolo_detector: YoloV9ObjectDetector, mock_image: np.ndarray) -> None:
+def test_predict_with_list_of_image_arrays(yolo_detector: YoloV9Detector, mock_image: np.ndarray) -> None:
     """Test the predict method with a list of image arrays."""
     # list of two identical image arrays
     images: list[np.ndarray] = [mock_image, mock_image]
@@ -88,7 +88,7 @@ def test_predict_with_list_of_image_arrays(yolo_detector: YoloV9ObjectDetector, 
     )
 
 
-def test_predict_with_list_of_image_paths(yolo_detector: YoloV9ObjectDetector, mock_image_path: Path) -> None:
+def test_predict_with_list_of_image_paths(yolo_detector: YoloV9Detector, mock_image_path: Path) -> None:
     """Test the predict method with a list of image paths."""
     # list of two identical image paths
     image_paths: list[str] = [str(mock_image_path), str(mock_image_path)]
@@ -100,7 +100,7 @@ def test_predict_with_list_of_image_paths(yolo_detector: YoloV9ObjectDetector, m
     )
 
 
-def test_predict_with_invalid_image_path(yolo_detector: YoloV9ObjectDetector) -> None:
+def test_predict_with_invalid_image_path(yolo_detector: YoloV9Detector) -> None:
     """Test the predict method with an invalid image path."""
     invalid_path: str = "non_existent_image.jpg"
     with pytest.raises(ValueError, match=f"Failed to load image at path: {invalid_path}"):
@@ -108,16 +108,14 @@ def test_predict_with_invalid_image_path(yolo_detector: YoloV9ObjectDetector) ->
 
 
 @no_type_check
-def test_predict_with_mixed_list(
-    yolo_detector: YoloV9ObjectDetector, mock_image: np.ndarray, mock_image_path: Path
-) -> None:
+def test_predict_with_mixed_list(yolo_detector: YoloV9Detector, mock_image: np.ndarray, mock_image_path: Path) -> None:
     """Test the predict method with a mixed list of image arrays and paths (should raise TypeError)."""
     mixed_input: list[object] = [mock_image, str(mock_image_path)]
     with pytest.raises(TypeError):
         yolo_detector.predict(mixed_input)
 
 
-def test_predict_with_empty_list(yolo_detector: YoloV9ObjectDetector) -> None:
+def test_predict_with_empty_list(yolo_detector: YoloV9Detector) -> None:
     """Test the predict method with an empty list."""
     results: list = yolo_detector.predict([])
     assert results == [], "Expected an empty list when input is empty"

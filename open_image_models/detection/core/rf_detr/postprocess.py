@@ -3,7 +3,7 @@ import numpy as np
 from open_image_models.detection.core.base import BoundingBox, DetectionResult
 
 
-def convert_to_detection_result(  # noqa: PLR0912
+def convert_to_detection_result(
     boxes: np.ndarray,
     logits: np.ndarray,
     class_labels: list[str],
@@ -31,44 +31,10 @@ def convert_to_detection_result(  # noqa: PLR0912
     Returns:
         Detection results ordered by descending confidence.
     """
-    boxes = np.asarray(boxes)
-    logits = np.asarray(logits)
-
-    # Raw ONNX outputs normally include a batch dimension
-    if boxes.ndim == 3:
-        if boxes.shape[0] != 1:
-            raise ValueError(f"Only single-image output is supported, but boxes have batch size {boxes.shape[0]}.")
-        boxes = boxes[0]
-
-    if logits.ndim == 3:
-        if logits.shape[0] != 1:
-            raise ValueError(f"Only single-image output is supported, but logits have batch size {logits.shape[0]}.")
-        logits = logits[0]
-
-    if boxes.ndim != 2 or boxes.shape[1] != 4:
-        raise ValueError(f"Expected boxes with shape (Q, 4), got {boxes.shape}.")
-
-    if logits.ndim != 2:
-        raise ValueError(f"Expected logits with shape (Q, C), got {logits.shape}.")
-
-    if boxes.shape[0] != logits.shape[0]:
-        raise ValueError(f"Boxes contain {boxes.shape[0]} queries, but logits contain {logits.shape[0]} queries.")
-
-    image_height, image_width = image_size
-    if image_height <= 0 or image_width <= 0:
-        raise ValueError(f"Image dimensions must be positive, got {image_size}.")
-
-    if not 0.0 <= score_threshold <= 1.0:
-        raise ValueError(f"score_threshold must be between 0 and 1, got {score_threshold}.")
+    boxes, logits = _prepare_outputs(boxes, logits, class_labels, image_size, score_threshold)
 
     if num_select <= 0:
         return []
-
-    # Current RF-DETR exports include one final non-user/no-object slot
-    if logits.shape[1] == len(class_labels) + 1:
-        logits = logits[:, :-1]
-    elif logits.shape[1] != len(class_labels):
-        raise ValueError(f"Model returned {logits.shape[1]} class slots, but {len(class_labels)} labels were supplied.")
 
     query_indexes, class_ids, selected_scores = _select_top_scores(logits, num_select)
 
@@ -90,6 +56,43 @@ def convert_to_detection_result(  # noqa: PLR0912
         class_labels=class_labels,
         image_size=image_size,
     )
+
+
+def _prepare_outputs(
+    boxes: np.ndarray,
+    logits: np.ndarray,
+    class_labels: list[str],
+    image_size: tuple[int, int],
+    score_threshold: float,
+) -> tuple[np.ndarray, np.ndarray]:
+    boxes = _remove_batch_dimension(np.asarray(boxes), "boxes")
+    logits = _remove_batch_dimension(np.asarray(logits), "logits")
+
+    if boxes.ndim != 2 or boxes.shape[1] != 4:
+        raise ValueError(f"Expected boxes with shape (Q, 4), got {boxes.shape}.")
+    if logits.ndim != 2:
+        raise ValueError(f"Expected logits with shape (Q, C), got {logits.shape}.")
+    if boxes.shape[0] != logits.shape[0]:
+        raise ValueError(f"Boxes contain {boxes.shape[0]} queries, but logits contain {logits.shape[0]} queries.")
+    if any(dimension <= 0 for dimension in image_size):
+        raise ValueError(f"Image dimensions must be positive, got {image_size}.")
+    if not 0.0 <= score_threshold <= 1.0:
+        raise ValueError(f"score_threshold must be between 0 and 1, got {score_threshold}.")
+
+    if logits.shape[1] == len(class_labels) + 1:
+        logits = logits[:, :-1]
+    elif logits.shape[1] != len(class_labels):
+        raise ValueError(f"Model returned {logits.shape[1]} class slots, but {len(class_labels)} labels were supplied.")
+
+    return boxes, logits
+
+
+def _remove_batch_dimension(values: np.ndarray, output_name: str) -> np.ndarray:
+    if values.ndim != 3:
+        return values
+    if values.shape[0] != 1:
+        raise ValueError(f"Only single-image output is supported, but {output_name} have batch size {values.shape[0]}.")
+    return values[0]
 
 
 def _select_top_scores(logits: np.ndarray, num_select: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:

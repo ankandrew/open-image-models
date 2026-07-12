@@ -6,6 +6,7 @@ import logging
 import pathlib
 import shutil
 import urllib.request
+from dataclasses import dataclass
 from http import HTTPStatus
 from typing import Literal
 
@@ -13,9 +14,11 @@ from tqdm.asyncio import tqdm
 
 from open_image_models.utils import safe_write
 
-BASE_URL: str = "https://github.com/ankandrew/open-image-models/releases/download"
+BASE_URL: str = "https://github.com/ankandrew/open-image-models/releases/download/assets"
 """Base URL where models will be fetched."""
-PlateDetectorModel = Literal[
+DetectorBackend = Literal["yolo_v9", "rf_detr"]
+"""Inference backends supported by the detector factory."""
+DetectionModelName = Literal[
     "yolo-v9-s-608-license-plate-end2end",
     "yolo-v9-t-640-license-plate-end2end",
     "yolo-v9-t-512-license-plate-end2end",
@@ -23,28 +26,78 @@ PlateDetectorModel = Literal[
     "yolo-v9-t-384-license-plate-end2end",
     "yolo-v9-t-256-license-plate-end2end",
 ]
-"""Available ONNX models for doing detection."""
+"""Names of the available object detection models."""
 
-AVAILABLE_ONNX_MODELS: dict[PlateDetectorModel, str] = {
-    # Plate Detection
-    "yolo-v9-s-608-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-s-608-license-plates-end2end.onnx",
-    "yolo-v9-t-640-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-640-license-plates-end2end.onnx",
-    "yolo-v9-t-512-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-512-license-plates-end2end.onnx",
-    "yolo-v9-t-416-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-416-license-plates-end2end.onnx",
-    "yolo-v9-t-384-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-384-license-plates-end2end.onnx",
-    "yolo-v9-t-256-license-plate-end2end": f"{BASE_URL}/assets/yolo-v9-t-256-license-plates-end2end.onnx",
-}
-"""Available ONNX models for doing inference."""
 MODEL_CACHE_DIR: pathlib.Path = pathlib.Path.home() / ".cache" / "open-image-models"
 """Default location where models will be stored."""
 
 
+@dataclass(frozen=True)
+class DetectionModelSpec:
+    """
+    Configuration required to construct a detector for a trained model.
+
+    Attributes:
+        url: URL of the ONNX model file.
+        backend: Inference backend used by the model.
+        class_labels: Labels corresponding to the model's class IDs.
+        default_conf_thresh: Default confidence threshold for predictions.
+    """
+
+    url: str
+    backend: DetectorBackend
+    class_labels: tuple[str, ...]
+    default_conf_thresh: float
+
+
+DETECTION_MODELS: dict[DetectionModelName, DetectionModelSpec] = {
+    "yolo-v9-s-608-license-plate-end2end": DetectionModelSpec(
+        url=f"{BASE_URL}/yolo-v9-s-608-license-plates-end2end.onnx",
+        backend="yolo_v9",
+        class_labels=("License Plate",),
+        default_conf_thresh=0.25,
+    ),
+    "yolo-v9-t-640-license-plate-end2end": DetectionModelSpec(
+        url=f"{BASE_URL}/yolo-v9-t-640-license-plates-end2end.onnx",
+        backend="yolo_v9",
+        class_labels=("License Plate",),
+        default_conf_thresh=0.25,
+    ),
+    "yolo-v9-t-512-license-plate-end2end": DetectionModelSpec(
+        url=f"{BASE_URL}/yolo-v9-t-512-license-plates-end2end.onnx",
+        backend="yolo_v9",
+        class_labels=("License Plate",),
+        default_conf_thresh=0.25,
+    ),
+    "yolo-v9-t-416-license-plate-end2end": DetectionModelSpec(
+        url=f"{BASE_URL}/yolo-v9-t-416-license-plates-end2end.onnx",
+        backend="yolo_v9",
+        class_labels=("License Plate",),
+        default_conf_thresh=0.25,
+    ),
+    "yolo-v9-t-384-license-plate-end2end": DetectionModelSpec(
+        url=f"{BASE_URL}/yolo-v9-t-384-license-plates-end2end.onnx",
+        backend="yolo_v9",
+        class_labels=("License Plate",),
+        default_conf_thresh=0.25,
+    ),
+    "yolo-v9-t-256-license-plate-end2end": DetectionModelSpec(
+        url=f"{BASE_URL}/yolo-v9-t-256-license-plates-end2end.onnx",
+        backend="yolo_v9",
+        class_labels=("License Plate",),
+        default_conf_thresh=0.25,
+    ),
+}
+"""Detection models available through `create_detector`."""
+
+
 def _download_with_progress(url: str, filename: pathlib.Path) -> None:
     """
-    Download utility function with progress bar.
+    Downloads a file while displaying progress.
 
-    :param url: URL of the model to download.
-    :param filename: Where to save the model.
+    Args:
+        url: URL of the file to download.
+        filename: Destination path.
     """
     with urllib.request.urlopen(url) as response, safe_write(filename, mode="wb") as out_file:
         if response.getcode() != HTTPStatus.OK:
@@ -58,21 +111,26 @@ def _download_with_progress(url: str, filename: pathlib.Path) -> None:
 
 
 def download_model(
-    model_name: PlateDetectorModel,
+    model_name: DetectionModelName,
     save_directory: pathlib.Path | None = None,
     force_download: bool = False,
 ) -> pathlib.Path:
     """
     Download a detection model to a given directory.
 
-    :param model_name: Which model to download.
-    :param save_directory: Directory to save the model. It should point to a folder. If not supplied, this will point
-    to '~/.cache/<model_name>'
-    :param force_download: Force and download the model if it already exists in `save_directory`.
-    :return: Path where the model lives.
+    Args:
+        model_name: Name of the registered model to download.
+        save_directory: Directory in which to store the model.
+        force_download: Download the model even if it is already cached.
+
+    Returns:
+        Path to the downloaded or cached model.
+
+    Raises:
+        ValueError: If the model is unknown or `save_directory` points to a file.
     """
-    if model_name not in AVAILABLE_ONNX_MODELS:
-        available_models = ", ".join(AVAILABLE_ONNX_MODELS.keys())
+    if model_name not in DETECTION_MODELS:
+        available_models = ", ".join(DETECTION_MODELS)
         raise ValueError(f"Unknown model {model_name}. Use one of [{available_models}]")
 
     if save_directory is None:
@@ -82,10 +140,10 @@ def download_model(
 
     save_directory.mkdir(parents=True, exist_ok=True)
 
-    model_url = AVAILABLE_ONNX_MODELS[model_name]
+    model_url = DETECTION_MODELS[model_name].url
     model_filename = save_directory / model_url.split("/")[-1]
 
-    if not force_download and model_filename.is_file():
+    if model_filename.is_file() and not force_download:
         logging.info(
             "Skipping download of '%s' model, already exists at %s",
             model_name,
@@ -93,9 +151,7 @@ def download_model(
         )
         return model_filename
 
-    # Download the model if not present or if we want to force the download
-    if force_download or not model_filename.is_file():
-        logging.info("Downloading model to %s", model_filename)
-        _download_with_progress(url=model_url, filename=model_filename)
+    logging.info("Downloading model to %s", model_filename)
+    _download_with_progress(url=model_url, filename=model_filename)
 
     return model_filename

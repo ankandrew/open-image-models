@@ -7,10 +7,10 @@ Easily integrate these models into your apps for **real-time** processing—idea
 production environments. In **one line of code**, you can have **powerful** model **inference** running!
 
 ```python
-from open_image_models import LicensePlateDetector
+from open_image_models import create_detector
 
-lp_detector = LicensePlateDetector(detection_model="yolo-v9-t-256-license-plate-end2end")
-lp_detector.predict("path/to/license_plate_image.jpg")
+detector = create_detector("yolo-v9-t-256-license-plate-end2end")
+detector.predict("path/to/license_plate_image.jpg")
 ```
 
 ???+ info

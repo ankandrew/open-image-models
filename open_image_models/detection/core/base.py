@@ -1,7 +1,10 @@
-from collections.abc import Iterator
+import os
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
-from typing import Any, Optional, Protocol
+from math import ceil, floor
+from typing import Any, Optional, Protocol, cast
 
+import cv2
 import numpy as np
 
 
@@ -242,14 +245,14 @@ class BoundingBox:  # pylint: disable=too-many-public-methods
         """
         return self.x1, self.y1, self.width, self.height
 
-    def to_cxcywh(self) -> tuple[float, float, int, int]:
+    def to_cxcywh(self) -> tuple[float, float, float, float]:
         """
         Converts the bounding box to center, width, and height format.
 
         Returns:
             The bounding box as `(center_x, center_y, width, height)`.
         """
-        return *self.center, self.width, self.height
+        return *self.center, float(self.width), float(self.height)
 
     def as_slices(self) -> tuple[slice, slice]:
         """
@@ -289,20 +292,6 @@ class BoundingBox:  # pylint: disable=too-many-public-methods
             y2=max(0, min(self.y2, max_height)),
         )
 
-    def is_valid(self, frame_width: int, frame_height: int) -> bool:
-        """
-        Checks whether the bounding box is non-empty and inside a frame.
-
-        Args:
-            frame_width: Width of the frame.
-            frame_height: Height of the frame.
-
-        Returns:
-            `True` if the coordinates are ordered, have positive area, and lie inside the frame boundaries,
-             otherwise `False`.
-        """
-        return not self.is_empty and self.is_inside(frame_width, frame_height)
-
     def is_inside(self, frame_width: int, frame_height: int) -> bool:
         """
         Checks whether all coordinates lie within frame boundaries.
@@ -318,6 +307,20 @@ class BoundingBox:  # pylint: disable=too-many-public-methods
             `True` if all coordinates lie within the frame, otherwise `False`.
         """
         return self.x1 >= 0 and self.y1 >= 0 and self.x2 <= frame_width and self.y2 <= frame_height
+
+    def is_valid(self, frame_width: int, frame_height: int) -> bool:
+        """
+        Checks whether the bounding box is non-empty and inside a frame.
+
+        Args:
+            frame_width: Width of the frame.
+            frame_height: Height of the frame.
+
+        Returns:
+            `True` if the coordinates are ordered, have positive area, and lie inside the frame boundaries,
+            otherwise `False`.
+        """
+        return not self.is_empty and self.is_inside(frame_width, frame_height)
 
 
 @dataclass(frozen=True)
@@ -338,18 +341,21 @@ class DetectionResult:
         cls,
         bbox_data: tuple[int, int, int, int],
         confidence: float,
-        class_id: str,
+        label: str,
     ) -> "DetectionResult":
         """
         Creates a `DetectionResult` instance from bounding box data, confidence, and a class label.
 
-        :param bbox_data: A tuple containing bounding box coordinates (x1, y1, x2, y2).
-        :param confidence: The detection confidence score.
-        :param class_id: The detected class label as a string.
-        :return: A `DetectionResult` instance.
+        Args:
+            bbox_data: Bounding box coordinates as `(x1, y1, x2, y2)`.
+            confidence: Detection confidence score.
+            label: Detected class label.
+
+        Returns:
+            A detection result containing the supplied data.
         """
         bounding_box = BoundingBox(*bbox_data)
-        return cls(class_id, confidence, bounding_box)
+        return cls(label, confidence, bounding_box)
 
 
 class ObjectDetector(Protocol):
@@ -366,17 +372,6 @@ class ObjectDetector(Protocol):
             or a list of lists of DetectionResult for multiple images.
         """
 
-    def show_benchmark(self, num_runs: int = 10) -> None:
-        """
-        Display the benchmark results of the model with a single random image.
-
-        Args:
-            num_runs: Number of times to run inference on the image for averaging.
-
-        Displays:
-            Model information and benchmark results in a formatted table.
-        """
-
     def display_predictions(self, image: np.ndarray) -> np.ndarray:
         """
         Run object detection on the input image and display the predictions on the image.
@@ -387,3 +382,104 @@ class ObjectDetector(Protocol):
         Returns:
             The image with bounding boxes and labels drawn on it.
         """
+
+
+@dataclass(frozen=True)
+class ModelInputShape:
+    """Relevant dimensions read from a detector's NCHW input shape."""
+
+    image_size: tuple[int, int]
+    dynamic_batch: bool
+
+
+def inspect_model_input_shape(input_shape: Sequence[Any]) -> ModelInputShape:
+    """
+    Validates a detector input shape and determines its batching capability.
+
+    Args:
+        input_shape: ONNX model input shape in NCHW format.
+
+    Returns:
+        Static image dimensions and whether the batch dimension is dynamic.
+
+    Raises:
+        ValueError: If the shape is not NCHW, does not use three channels, has
+            dynamic spatial dimensions, or has a fixed batch size other than one.
+    """
+    if len(input_shape) != 4:
+        raise ValueError(f"Expected model input shape in NCHW format, got {input_shape}")
+
+    batch_size, channels, height, width = input_shape
+    if channels != 3:
+        raise ValueError(f"Expected model input with 3 channels, got {channels}")
+    if not isinstance(height, int) or not isinstance(width, int):
+        raise ValueError(f"Expected static input height and width, got {input_shape}")
+    if isinstance(batch_size, int) and batch_size != 1:
+        raise ValueError(f"Expected a dynamic batch or fixed batch size 1, got {batch_size}")
+
+    return ModelInputShape(image_size=(height, width), dynamic_batch=not isinstance(batch_size, int))
+
+
+def resolve_image_inputs(images: Any) -> tuple[list[np.ndarray], bool]:
+    """
+    Normalize supported detector inputs into loaded image arrays.
+
+    Args:
+        images: A single image array/path or a list of image arrays/paths.
+
+    Returns:
+        A tuple of loaded BGR images and whether the original input was a single image.
+    """
+    if isinstance(images, np.ndarray):
+        return [images], True
+    if isinstance(images, str | os.PathLike):
+        return [_load_image(images)], True
+    if isinstance(images, list):
+        if all(isinstance(img, np.ndarray) for img in images):
+            return cast(list[np.ndarray], images), False
+        if all(isinstance(img, str | os.PathLike) for img in images):
+            return [_load_image(img) for img in images], False
+        raise TypeError("List must contain either all numpy arrays or all image file paths.")
+    raise TypeError("Input must be a numpy array, a list of numpy arrays, or a list of image file paths.")
+
+
+def draw_detection_results(image: np.ndarray, detections: list[DetectionResult]) -> np.ndarray:
+    """
+    Draw detection results on an image.
+
+    Args:
+        image: Input image to mutate.
+        detections: Detection results to draw.
+
+    Returns:
+        The input image with bounding boxes and labels drawn on it.
+    """
+    for detection in detections:
+        bbox = detection.bounding_box
+        label = f"{detection.label}: {detection.confidence:.2f}"
+        cv2.rectangle(image, (bbox.x1, bbox.y1), (bbox.x2, bbox.y2), (0, 255, 0), 2)
+        (text_width, text_height), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+        cv2.rectangle(
+            image,
+            (bbox.x1, bbox.y1 - text_height - baseline),
+            (bbox.x1 + text_width, bbox.y1),
+            (0, 255, 0),
+            thickness=cv2.FILLED,
+        )
+        cv2.putText(
+            image,
+            label,
+            (bbox.x1, bbox.y1 - baseline),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 0, 0),
+            1,
+        )
+    return image
+
+
+def _load_image(image_path: str | os.PathLike[str]) -> np.ndarray:
+    image = cv2.imread(str(image_path))
+    if image is None:
+        raise ValueError(f"Failed to load image at path: {image_path}")
+    return image
