@@ -9,7 +9,7 @@ from pathlib import Path
 
 import onnxruntime as ort
 
-from open_image_models.detection.core.base import ObjectDetector
+from open_image_models.detection.core.base import ClassLabels, ObjectDetector
 from open_image_models.detection.core.hub import (
     DETECTION_MODELS,
     DetectionModelName,
@@ -60,7 +60,7 @@ def create_detector(
     model: str | os.PathLike[str],
     *,
     backend: DetectorBackend | None = None,
-    class_labels: Sequence[str] | None = None,
+    class_labels: ClassLabels | None = None,
     conf_thresh: float | None = None,
     batch_size: int = 1,
     providers: Sequence[str | tuple[str, dict]] | None = None,
@@ -72,7 +72,7 @@ def create_detector(
     Args:
         model: Registered model name or path to a local ONNX model.
         backend: Inference backend. Required only for local models.
-        class_labels: Model class labels. Required only for local models.
+        class_labels: Contiguous labels or a class-ID mapping. Required only for local models.
         conf_thresh: Confidence threshold. Uses the model default when omitted.
         batch_size: Maximum inference batch size for models with a dynamic batch dimension.
         providers: ONNX Runtime providers in order of decreasing precedence.
@@ -92,16 +92,14 @@ def create_detector(
             raise FileNotFoundError(f"ONNX model not found at '{model_path}'")
         if backend is None or class_labels is None:
             raise ValueError("backend and class_labels are required for a local model")
-        if isinstance(class_labels, str) or not class_labels:
-            raise ValueError("class_labels must contain at least one label")
-        labels = list(class_labels)
+        labels = class_labels
     else:
         if backend is not None or class_labels is not None:
             raise ValueError("backend and class_labels cannot override a registered model")
         spec = DETECTION_MODELS[model]
         model_path = download_model(model)
         backend = spec.backend
-        labels = list(spec.class_labels)
+        labels = spec.class_labels
         if threshold is None:
             threshold = spec.default_conf_thresh
 

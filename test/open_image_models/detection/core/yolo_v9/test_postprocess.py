@@ -22,9 +22,9 @@ def _sample_predictions() -> np.ndarray:
 
 
 @pytest.fixture(name="class_labels")
-def _class_labels() -> list[str]:
-    """Provides a list of class labels."""
-    return ["person", "car", "dog"]
+def _class_labels() -> dict[int, str]:
+    """Provides class labels indexed by class ID."""
+    return {0: "person", 1: "car", 2: "dog"}
 
 
 @pytest.fixture(name="scaling_ratio")
@@ -52,7 +52,7 @@ def _padding_values() -> tuple[int, int]:
 )
 def test_convert_to_detection_result(
     sample_predictions: np.ndarray,
-    class_labels: list[str],
+    class_labels: dict[int, str],
     scaling_ratio: tuple[float, float],
     padding_values: tuple[int, int],
     score_threshold: float,
@@ -78,7 +78,7 @@ def test_convert_to_detection_result(
 
 def test_bounding_box_adjustment(
     sample_predictions: np.ndarray,
-    class_labels: list[str],
+    class_labels: dict[int, str],
     scaling_ratio: tuple[float, float],
     padding_values: tuple[int, int],
 ) -> None:
@@ -109,13 +109,15 @@ def test_bounding_box_adjustment(
     "class_labels, expected_label",
     [
         # Known class label
-        (["person", "car", "dog"], "dog"),
+        ({0: "person", 1: "car", 2: "dog"}, "dog"),
+        # Sparse class label mapping
+        ({2: "dog"}, "dog"),
         # Out of bounds class label should return class_id as string
-        (["person", "car"], "2"),
+        ({0: "person", 1: "car"}, "2"),
     ],
 )
 def test_class_label_mapping(
-    class_labels: list[str],
+    class_labels: dict[int, str],
     scaling_ratio: tuple[float, float],
     padding_values: tuple[int, int],
     expected_label: str,
@@ -138,7 +140,7 @@ def test_class_label_mapping(
 
 def test_no_results_below_threshold(
     sample_predictions: np.ndarray,
-    class_labels: list[str],
+    class_labels: dict[int, str],
     scaling_ratio: tuple[float, float],
     padding_values: tuple[int, int],
 ) -> None:

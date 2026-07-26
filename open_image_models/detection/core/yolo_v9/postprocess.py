@@ -1,3 +1,5 @@
+from collections.abc import Mapping
+
 import numpy as np
 
 from open_image_models.detection.core.base import BoundingBox, DetectionResult
@@ -5,7 +7,7 @@ from open_image_models.detection.core.base import BoundingBox, DetectionResult
 
 def convert_to_detection_result(
     predictions: np.ndarray,
-    class_labels: list[str],
+    class_labels: Mapping[int, str],
     ratio: tuple[float, float],
     padding: tuple[float, float],
     score_threshold: float = 0.5,
@@ -17,7 +19,7 @@ def convert_to_detection_result(
     Args:
         predictions: The concatenated array of the form
                      [X, selected_boxes, selected_categories, selected_scores].
-        class_labels: List of class labels corresponding to the class IDs.
+        class_labels: Mapping from class IDs to labels.
         ratio: Scaling ratio used during preprocessing.
         padding: Tuple of padding values (dw, dh) added during preprocessing.
         score_threshold: Minimum confidence score to include a detection result.
@@ -45,7 +47,7 @@ def convert_to_detection_result(
         bbox[3] = (bbox[3] - padding[1]) / ratio[1]
 
         # Map class_id to label if available
-        label = class_labels[class_id] if class_id < len(class_labels) else str(class_id)
+        label = class_labels.get(class_id, str(class_id))
 
         # Create BoundingBox and DetectionResult instances
         bounding_box = BoundingBox(x1=int(bbox[0]), y1=int(bbox[1]), x2=int(bbox[2]), y2=int(bbox[3]))

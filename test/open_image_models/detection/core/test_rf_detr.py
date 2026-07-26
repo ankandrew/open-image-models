@@ -33,7 +33,7 @@ def test_rf_detr_postprocess_converts_normalized_boxes_to_source_image_size():
     results = convert_to_detection_result(
         boxes=boxes,
         logits=logits,
-        class_labels=["background", "vehicle"],
+        class_labels={0: "background", 1: "vehicle"},
         image_size=(100, 200),
         score_threshold=0.9,
     )

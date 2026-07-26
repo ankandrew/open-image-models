@@ -1,11 +1,40 @@
 import os
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from math import ceil, floor
 from typing import Any, Optional, Protocol, cast
 
 import cv2
 import numpy as np
+
+ClassLabels = Sequence[str] | Mapping[int, str]
+"""Class labels as a contiguous sequence or explicit class-ID mapping."""
+
+
+def normalize_class_labels(class_labels: ClassLabels) -> dict[int, str]:
+    """
+    Normalize class labels into an explicit class-ID mapping.
+
+    Args:
+        class_labels: Contiguous labels or a mapping from model class IDs to labels.
+
+    Returns:
+        A class-ID-to-label dictionary.
+
+    Raises:
+        ValueError: If no labels are supplied or a class ID or label is invalid.
+    """
+    if isinstance(class_labels, str):
+        raise ValueError("class_labels must contain at least one label")
+
+    labels = dict(class_labels.items()) if isinstance(class_labels, Mapping) else dict(enumerate(class_labels))
+    if not labels:
+        raise ValueError("class_labels must contain at least one label")
+    if any(isinstance(class_id, bool) or not isinstance(class_id, int) or class_id < 0 for class_id in labels):
+        raise ValueError("class label IDs must be non-negative integers")
+    if any(not isinstance(label, str) or not label for label in labels.values()):
+        raise ValueError("class labels must be non-empty strings")
+    return labels
 
 
 @dataclass(frozen=True)

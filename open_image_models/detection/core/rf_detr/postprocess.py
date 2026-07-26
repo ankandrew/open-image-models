@@ -1,3 +1,5 @@
+from collections.abc import Mapping
+
 import numpy as np
 
 from open_image_models.detection.core.base import BoundingBox, DetectionResult
@@ -6,7 +8,7 @@ from open_image_models.detection.core.base import BoundingBox, DetectionResult
 def convert_to_detection_result(
     boxes: np.ndarray,
     logits: np.ndarray,
-    class_labels: list[str],
+    class_labels: Mapping[int, str],
     image_size: tuple[int, int],
     score_threshold: float = 0.5,
     num_select: int = 300,
@@ -20,7 +22,7 @@ def convert_to_detection_result(
         logits:
             Raw class logits with shape (Q, C), (Q, C + 1), (1, Q, C), or (1, Q, C + 1).
         class_labels:
-            Class labels corresponding to user-visible class IDs.
+            Mapping from model class IDs to user-visible labels.
         image_size:
             Original image size as (height, width).
         score_threshold:
@@ -31,12 +33,12 @@ def convert_to_detection_result(
     Returns:
         Detection results ordered by descending confidence.
     """
-    boxes, logits = _prepare_outputs(boxes, logits, class_labels, image_size, score_threshold)
+    boxes, logits, model_class_ids = _prepare_outputs(boxes, logits, class_labels, image_size, score_threshold)
 
     if num_select <= 0:
         return []
 
-    query_indexes, class_ids, selected_scores = _select_top_scores(logits, num_select)
+    query_indexes, class_ids, selected_scores = _select_top_scores(logits, model_class_ids, num_select)
 
     # Discard low-confidence results before box conversion and object creation
     keep = selected_scores > score_threshold
@@ -61,10 +63,10 @@ def convert_to_detection_result(
 def _prepare_outputs(
     boxes: np.ndarray,
     logits: np.ndarray,
-    class_labels: list[str],
+    class_labels: Mapping[int, str],
     image_size: tuple[int, int],
     score_threshold: float,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     boxes = _remove_batch_dimension(np.asarray(boxes), "boxes")
     logits = _remove_batch_dimension(np.asarray(logits), "logits")
 
@@ -79,12 +81,15 @@ def _prepare_outputs(
     if not 0.0 <= score_threshold <= 1.0:
         raise ValueError(f"score_threshold must be between 0 and 1, got {score_threshold}.")
 
-    if logits.shape[1] == len(class_labels) + 1:
-        logits = logits[:, :-1]
-    elif logits.shape[1] != len(class_labels):
-        raise ValueError(f"Model returned {logits.shape[1]} class slots, but {len(class_labels)} labels were supplied.")
+    model_class_ids = np.array(sorted(class_labels), dtype=np.int64)
+    if model_class_ids.size == 0:
+        raise ValueError("At least one class label is required.")
+    if model_class_ids[0] < 0 or model_class_ids[-1] >= logits.shape[1]:
+        raise ValueError(
+            f"Model returned {logits.shape[1]} class slots, but labels require class ID {model_class_ids[-1]}."
+        )
 
-    return boxes, logits
+    return boxes, logits[:, model_class_ids], model_class_ids
 
 
 def _remove_batch_dimension(values: np.ndarray, output_name: str) -> np.ndarray:
@@ -95,7 +100,11 @@ def _remove_batch_dimension(values: np.ndarray, output_name: str) -> np.ndarray:
     return values[0]
 
 
-def _select_top_scores(logits: np.ndarray, num_select: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _select_top_scores(
+    logits: np.ndarray,
+    model_class_ids: np.ndarray,
+    num_select: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     flat_logits = logits.reshape(-1)
 
     if flat_logits.size == 0 or num_select <= 0:
@@ -115,7 +124,7 @@ def _select_top_scores(logits: np.ndarray, num_select: int) -> tuple[np.ndarray,
 
     num_classes = logits.shape[1]
     query_indexes = selected_indexes // num_classes
-    class_ids = selected_indexes % num_classes
+    class_ids = model_class_ids[selected_indexes % num_classes]
 
     selected_logits = flat_logits[selected_indexes].astype(np.float32, copy=False)
     selected_logits = np.clip(selected_logits, -88.0, 88.0)
@@ -142,7 +151,7 @@ def _create_detection_results(
     boxes: np.ndarray,
     class_ids: np.ndarray,
     scores: np.ndarray,
-    class_labels: list[str],
+    class_labels: Mapping[int, str],
     image_size: tuple[int, int],
 ) -> list[DetectionResult]:
     image_height, image_width = image_size

@@ -12,9 +12,11 @@ from rich.table import Table
 from rich.text import Text
 
 from open_image_models.detection.core.base import (
+    ClassLabels,
     DetectionResult,
     draw_detection_results,
     inspect_model_input_shape,
+    normalize_class_labels,
     resolve_image_inputs,
 )
 from open_image_models.detection.core.yolo_v9.postprocess import convert_to_detection_result
@@ -42,7 +44,7 @@ class YoloV9Detector:
     def __init__(
         self,
         model_path: str | os.PathLike[str],
-        class_labels: list[str],
+        class_labels: ClassLabels,
         *,
         conf_thresh: float | None = None,
         batch_size: int = 1,
@@ -54,7 +56,7 @@ class YoloV9Detector:
 
         Args:
             model_path: Path to the ONNX model file to use.
-            class_labels: List of class labels corresponding to the class IDs.
+            class_labels: Contiguous labels or a mapping from class IDs to labels.
             conf_thresh: Confidence threshold for filtering predictions. Defaults to 0.25.
             batch_size: Maximum inference batch size for dynamic-batch models.
             providers: Optional sequence of providers in order of decreasing precedence. If not specified, all available
@@ -62,7 +64,7 @@ class YoloV9Detector:
             sess_options: Advanced session options for ONNX Runtime.
         """
         self.conf_thresh = 0.25 if conf_thresh is None else conf_thresh
-        self.class_labels = class_labels
+        self.class_labels = normalize_class_labels(class_labels)
         if batch_size <= 0:
             raise ValueError("batch_size must be positive")
         # Check if model path exists

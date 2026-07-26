@@ -8,9 +8,11 @@ import numpy as np
 import onnxruntime as ort
 
 from open_image_models.detection.core.base import (
+    ClassLabels,
     DetectionResult,
     draw_detection_results,
     inspect_model_input_shape,
+    normalize_class_labels,
     resolve_image_inputs,
 )
 from open_image_models.detection.core.rf_detr.postprocess import convert_to_detection_result
@@ -30,7 +32,7 @@ class RFDETRDetector:
     def __init__(
         self,
         model_path: str | os.PathLike[str],
-        class_labels: list[str],
+        class_labels: ClassLabels,
         *,
         conf_thresh: float | None = None,
         num_select: int = 300,
@@ -43,7 +45,7 @@ class RFDETRDetector:
 
         Args:
             model_path: Path to the exported RF-DETR ONNX model.
-            class_labels: List of class labels corresponding to class IDs.
+            class_labels: Contiguous labels or a mapping from class IDs to labels.
             conf_thresh: Confidence threshold for filtering predictions. Defaults to 0.5.
             num_select: Maximum number of query/class pairs to consider.
             batch_size: Maximum inference batch size for dynamic-batch models.
@@ -52,7 +54,7 @@ class RFDETRDetector:
             sess_options: Advanced session options for ONNX Runtime.
         """
         self.conf_thresh = 0.5 if conf_thresh is None else conf_thresh
-        self.class_labels = class_labels
+        self.class_labels = normalize_class_labels(class_labels)
         self.num_select = num_select
         if batch_size <= 0:
             raise ValueError("batch_size must be positive")

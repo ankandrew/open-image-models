@@ -8,12 +8,24 @@ from open_image_models.detection.core.base import (
     DetectionResult,
     ModelInputShape,
     inspect_model_input_shape,
+    normalize_class_labels,
     resolve_image_inputs,
 )
 from test.assets import ASSETS_DIR
 
 TEST_IMAGE = np.zeros((2, 2, 3), dtype=np.uint8)
 TEST_IMAGE_PATH = ASSETS_DIR / "car_image.webp"
+
+
+@pytest.mark.parametrize(
+    "class_labels, expected",
+    [
+        (["person", "car"], {0: "person", 1: "car"}),
+        ({1: "person", 3: "car"}, {1: "person", 3: "car"}),
+    ],
+)
+def test_normalize_class_labels(class_labels, expected):
+    assert normalize_class_labels(class_labels) == expected
 
 
 @pytest.mark.parametrize(
