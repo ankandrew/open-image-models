@@ -66,6 +66,17 @@ pip install open-image-models[onnx]
 
 ### Object Detection
 
+#### COCO Detection
+
+| Model                       | Image Size | Classes | Dynamic Batch |
+|-----------------------------|------------|---------|---------------|
+| `rf-detr-nano-384-coco`     | 384        | 80      | Yes           |
+| `rf-detr-small-512-coco`    | 512        | 80      | Yes           |
+| `rf-detr-medium-576-coco`   | 576        | 80      | Yes           |
+| `rf-detr-large-704-coco`    | 704        | 80      | Yes           |
+
+CoreML is excluded from automatic RF-DETR provider selection.
+
 #### Plate Detection
 
 ![](https://raw.githubusercontent.com/ankandrew/LocalizadorPatentes/2e765012f69c4fbd8decf998e61ed136004ced24/extra/demo_localizador.gif)

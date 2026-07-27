@@ -49,8 +49,8 @@ class RFDETRDetector:
             conf_thresh: Confidence threshold for filtering predictions. Defaults to 0.5.
             num_select: Maximum number of query/class pairs to consider.
             batch_size: Maximum inference batch size for dynamic-batch models.
-            providers: Optional sequence of providers in order of decreasing precedence. If not specified, all available
-                providers are used.
+            providers: Optional sequence of providers in order of decreasing precedence. When omitted, CoreML is
+                avoided because it may be slower or incompatible with dynamic-batch RF-DETR models.
             sess_options: Advanced session options for ONNX Runtime.
         """
         self.conf_thresh = 0.5 if conf_thresh is None else conf_thresh
@@ -63,7 +63,10 @@ class RFDETRDetector:
         if not model_path.exists():
             raise FileNotFoundError(f"ONNX model not found at '{model_path}'")
 
-        providers = providers or ort.get_available_providers()
+        if providers is None:
+            providers = [
+                provider for provider in ort.get_available_providers() if provider != "CoreMLExecutionProvider"
+            ]
         self.model = ort.InferenceSession(str(model_path), providers=providers, sess_options=sess_options)
         self.input_name = self.model.get_inputs()[0].name
         input_shape = inspect_model_input_shape(self.model.get_inputs()[0].shape)

@@ -12,6 +12,8 @@ from typing import Literal
 
 from tqdm.asyncio import tqdm
 
+from open_image_models.detection.core.base import ClassLabels
+from open_image_models.detection.core.coco import COCO_CLASSES
 from open_image_models.utils import safe_write
 
 BASE_URL: str = "https://github.com/ankandrew/open-image-models/releases/download/assets"
@@ -19,6 +21,10 @@ BASE_URL: str = "https://github.com/ankandrew/open-image-models/releases/downloa
 DetectorBackend = Literal["yolo_v9", "rf_detr"]
 """Inference backends supported by the detector factory."""
 DetectionModelName = Literal[
+    "rf-detr-nano-384-coco",
+    "rf-detr-small-512-coco",
+    "rf-detr-medium-576-coco",
+    "rf-detr-large-704-coco",
     "yolo-v9-s-608-license-plate-end2end",
     "yolo-v9-t-640-license-plate-end2end",
     "yolo-v9-t-512-license-plate-end2end",
@@ -46,11 +52,35 @@ class DetectionModelSpec:
 
     url: str
     backend: DetectorBackend
-    class_labels: tuple[str, ...]
+    class_labels: ClassLabels
     default_conf_thresh: float
 
 
 DETECTION_MODELS: dict[DetectionModelName, DetectionModelSpec] = {
+    "rf-detr-nano-384-coco": DetectionModelSpec(
+        url=f"{BASE_URL}/rf-detr-nano-384-coco.onnx",
+        backend="rf_detr",
+        class_labels=COCO_CLASSES,
+        default_conf_thresh=0.5,
+    ),
+    "rf-detr-small-512-coco": DetectionModelSpec(
+        url=f"{BASE_URL}/rf-detr-small-512-coco.onnx",
+        backend="rf_detr",
+        class_labels=COCO_CLASSES,
+        default_conf_thresh=0.5,
+    ),
+    "rf-detr-medium-576-coco": DetectionModelSpec(
+        url=f"{BASE_URL}/rf-detr-medium-576-coco.onnx",
+        backend="rf_detr",
+        class_labels=COCO_CLASSES,
+        default_conf_thresh=0.5,
+    ),
+    "rf-detr-large-704-coco": DetectionModelSpec(
+        url=f"{BASE_URL}/rf-detr-large-704-coco.onnx",
+        backend="rf_detr",
+        class_labels=COCO_CLASSES,
+        default_conf_thresh=0.5,
+    ),
     "yolo-v9-s-608-license-plate-end2end": DetectionModelSpec(
         url=f"{BASE_URL}/yolo-v9-s-608-license-plates-end2end.onnx",
         backend="yolo_v9",
