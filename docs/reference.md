@@ -39,5 +39,6 @@ The following components are shared by all detection backends:
       group_by_category: false
       members:
         - DetectionModelName
+        - LicensePlateModelName
         - DetectionModelSpec
         - DETECTION_MODELS

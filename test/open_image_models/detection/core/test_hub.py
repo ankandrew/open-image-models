@@ -8,11 +8,25 @@ from typing import get_args
 import pytest
 import requests
 
-from open_image_models.detection.core.hub import DETECTION_MODELS, DetectionModelName
+from open_image_models.detection.core.hub import (
+    DETECTION_MODELS,
+    DetectionModelName,
+    LicensePlateModelName,
+    PlateDetectorModel,
+)
 
 
 def test_registered_models_match_model_name_literal():
     assert set(DETECTION_MODELS) == set(get_args(DetectionModelName))
+
+
+def test_plate_detector_model_compatibility_alias():
+    plate_models = {
+        model_name for model_name, spec in DETECTION_MODELS.items() if spec.class_labels == ("License Plate",)
+    }
+
+    assert PlateDetectorModel is LicensePlateModelName
+    assert set(get_args(PlateDetectorModel)) == plate_models
 
 
 @pytest.mark.parametrize("model_name", DETECTION_MODELS)

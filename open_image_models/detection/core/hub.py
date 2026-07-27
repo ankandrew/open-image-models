@@ -20,6 +20,17 @@ BASE_URL: str = "https://github.com/ankandrew/open-image-models/releases/downloa
 """Base URL where models will be fetched."""
 DetectorBackend = Literal["yolo_v9", "rf_detr"]
 """Inference backends supported by the detector factory."""
+LicensePlateModelName = Literal[
+    "yolo-v9-s-608-license-plate-end2end",
+    "yolo-v9-t-640-license-plate-end2end",
+    "yolo-v9-t-512-license-plate-end2end",
+    "yolo-v9-t-416-license-plate-end2end",
+    "yolo-v9-t-384-license-plate-end2end",
+    "yolo-v9-t-256-license-plate-end2end",
+]
+"""Names of the available license plate detection models."""
+PlateDetectorModel = LicensePlateModelName
+"""Deprecated compatibility alias for `LicensePlateModelName`."""
 DetectionModelName = Literal[
     "rf-detr-nano-384-coco",
     "rf-detr-small-512-coco",

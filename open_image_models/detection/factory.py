@@ -14,6 +14,7 @@ from open_image_models.detection.core.hub import (
     DETECTION_MODELS,
     DetectionModelName,
     DetectorBackend,
+    LicensePlateModelName,
     download_model,
 )
 from open_image_models.detection.core.rf_detr.inference import RFDETRDetector
@@ -21,7 +22,7 @@ from open_image_models.detection.core.yolo_v9.inference import YoloV9Detector
 
 
 def _license_plate_detector(
-    detection_model: DetectionModelName,
+    detection_model: LicensePlateModelName,
     conf_thresh: float | None = None,
     providers: Sequence[str | tuple[str, dict]] | None = None,
     sess_options: ort.SessionOptions | None = None,
