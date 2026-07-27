@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.1](https://github.com/ankandrew/open-image-models/compare/v0.6.0...v0.6.1) (2026-07-27)
+
+
+### Bug Fixes
+
+* avoid duplicate release tests and creation ([fadeb2b](https://github.com/ankandrew/open-image-models/commit/fadeb2bc449780a8148b9df4836ec7994d4bab16))
+* run linters once outside test matrix ([f22000e](https://github.com/ankandrew/open-image-models/commit/f22000e02b30642f317cdba7755c0631638b109e))
+
 ## [0.6.0](https://github.com/ankandrew/open-image-models/compare/v0.5.1...v0.6.0) (2026-07-27)
 
 
