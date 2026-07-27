@@ -57,7 +57,7 @@ def _license_plate_detector(
 
 
 def create_detector(
-    model: str | os.PathLike[str],
+    model: DetectionModelName | str | os.PathLike[str],
     *,
     backend: DetectorBackend | None = None,
     class_labels: ClassLabels | None = None,
