@@ -2,9 +2,8 @@ import logging
 import os
 import pathlib
 from collections.abc import Sequence
-from typing import Any, cast, overload
+from typing import Any, overload
 
-import cv2
 import numpy as np
 import onnxruntime as ort
 from rich.console import Console
@@ -12,7 +11,14 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from open_image_models.detection.core.base import DetectionResult, ObjectDetector
+from open_image_models.detection.core.base import (
+    ClassLabels,
+    DetectionResult,
+    draw_detection_results,
+    inspect_model_input_shape,
+    normalize_class_labels,
+    resolve_image_inputs,
+)
 from open_image_models.detection.core.yolo_v9.postprocess import convert_to_detection_result
 from open_image_models.detection.core.yolo_v9.preprocess import preprocess
 from open_image_models.utils import measure_time, set_seed
@@ -22,7 +28,15 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
 
 
-class YoloV9ObjectDetector(ObjectDetector):
+def _split_batch_predictions(predictions: np.ndarray, batch_size: int) -> list[np.ndarray]:
+    if predictions.ndim == 3 and predictions.shape[0] == batch_size:
+        return [predictions[index] for index in range(batch_size)]
+    if predictions.ndim == 2 and predictions.shape[1] >= 7:
+        return [predictions[predictions[:, 0] == index] for index in range(batch_size)]
+    raise ValueError(f"Unexpected YOLOv9 output shape for batch size {batch_size}: {predictions.shape}")
+
+
+class YoloV9Detector:
     """
     YoloV9-specific ONNX inference class for performing object detection using the Yolo v9 ONNX model.
     """
@@ -30,24 +44,29 @@ class YoloV9ObjectDetector(ObjectDetector):
     def __init__(
         self,
         model_path: str | os.PathLike[str],
-        class_labels: list[str],
-        conf_thresh: float = 0.25,
+        class_labels: ClassLabels,
+        *,
+        conf_thresh: float | None = None,
+        batch_size: int = 1,
         providers: Sequence[str | tuple[str, dict]] | None = None,
-        sess_options: ort.SessionOptions = None,
+        sess_options: ort.SessionOptions | None = None,
     ) -> None:
         """
-        Initializes the YoloV9ObjectDetector with the specified detection model and inference device.
+        Initializes the YOLOv9 detector with the specified model and inference device.
 
         Args:
             model_path: Path to the ONNX model file to use.
-            class_labels: List of class labels corresponding to the class IDs.
-            conf_thresh: Confidence threshold for filtering predictions.
+            class_labels: Contiguous labels or a mapping from class IDs to labels.
+            conf_thresh: Confidence threshold for filtering predictions. Defaults to 0.25.
+            batch_size: Maximum inference batch size for dynamic-batch models.
             providers: Optional sequence of providers in order of decreasing precedence. If not specified, all available
             providers are used.
             sess_options: Advanced session options for ONNX Runtime.
         """
-        self.conf_thresh = conf_thresh
-        self.class_labels = class_labels
+        self.conf_thresh = 0.25 if conf_thresh is None else conf_thresh
+        self.class_labels = normalize_class_labels(class_labels)
+        if batch_size <= 0:
+            raise ValueError("batch_size must be positive")
         # Check if model path exists
         model_path = pathlib.Path(model_path)
         if not model_path.exists():
@@ -59,13 +78,12 @@ class YoloV9ObjectDetector(ObjectDetector):
         # Get input and output names from the model
         self.input_name = self.model.get_inputs()[0].name
         self.output_name = self.model.get_outputs()[0].name
-        # Validate model input shape for square images only
-        _, _, h, w = self.model.get_inputs()[0].shape
-        if h != w:
-            raise ValueError(f"Model only supports square images, but received shape: {h}x{w}")
-        self.img_size = h, w
-        self.providers = providers
-        LOGGER.info("Using ONNX Runtime with %s provider(s)", self.providers)
+        input_shape = inspect_model_input_shape(self.model.get_inputs()[0].shape)
+        if input_shape.image_size[0] != input_shape.image_size[1]:
+            raise ValueError(f"Model only supports square images, but received shape: {input_shape.image_size}")
+        self.img_size = input_shape.image_size
+        self.batch_size = batch_size if input_shape.dynamic_batch else 1
+        LOGGER.info("Using ONNX Runtime with %s provider(s)", providers)
 
     @overload
     def predict(self, images: np.ndarray) -> list[DetectionResult]: ...
@@ -97,71 +115,47 @@ class YoloV9ObjectDetector(ObjectDetector):
             A list of DetectionResult for a single image input,
             or a list of lists of DetectionResult for multiple images.
         """
-        # Check the type of input and process accordingly
-        if isinstance(images, np.ndarray):
-            # Single image array
-            return self._predict(images)
-        # Check if a single image path is provided as a string
-        if isinstance(images, str | os.PathLike):
-            # Try loading the image
-            image = cv2.imread(str(images))
-            if image is None:
-                raise ValueError(f"Failed to load image at path: {images}")
-            # Predict for the single loaded image
-            return self._predict(image)
-        if isinstance(images, list):
-            # List of images or image paths
-            # TODO: Upload ONNX models with dynamic batch, so this is performed in truly batch inference fashion.
-            #       Dynamic batch inference hurts performance running locally too.
-            #       See also https://stackoverflow.com/a/76735504/4544940
-            if all(isinstance(img, np.ndarray) for img in images):
-                # List of image arrays
-                images = cast(list[np.ndarray], images)
-                return [self._predict(img) for img in images]
-            if all(isinstance(img, str | os.PathLike) for img in images):
-                # List of image paths
-                loaded_images = [cv2.imread(str(img)) for img in images]
-                # Check for any images that failed to load
-                for idx, img in enumerate(loaded_images):
-                    if img is None:
-                        raise ValueError(f"Failed to load image at path: {images[idx]}")
-                return [self._predict(img) for img in loaded_images]
-            raise TypeError("List must contain either all numpy arrays or all image file paths.")
-        raise TypeError("Input must be a numpy array, a list of numpy arrays, or a list of image file paths.")
+        loaded_images, is_single = resolve_image_inputs(images)
+        results: list[list[DetectionResult]] = []
+        for start in range(0, len(loaded_images), self.batch_size):
+            results.extend(self._predict_batch(loaded_images[start : start + self.batch_size]))
+        return results[0] if is_single else results
 
     def _predict(self, image: np.ndarray) -> list[DetectionResult]:
-        """
-        Perform object detection on a single image frame.
+        return self._predict_batch([image])[0]
 
-        This function takes an image in BGR format, runs it through the object detection model,
-        and returns a list of detected objects, including their class labels and bounding boxes.
+    def _predict_batch(self, images: list[np.ndarray]) -> list[list[DetectionResult]]:
+        """
+        Performs object detection on an image batch.
 
         Args:
-            image: Input image frame in BGR format.
+            images: Input image frames in BGR format.
 
         Returns:
-            A list of DetectionResult containing detected objects information.
+            Detection results for each image.
         """
-        # Preprocess the image using YoloV9-specific preprocessing function
-        inputs, ratio, (dw, dh) = preprocess(image, self.img_size)
-        # Run inference
+        processed = [preprocess(image, self.img_size) for image in images]
+        inputs = np.concatenate([item[0] for item in processed])
         try:
             predictions = self.model.run([self.output_name], {self.input_name: inputs})[0]
         # CoreML doesn't handle empty data scenario, so sometimes the end to end NMS might fail.
         # For more information see https://github.com/microsoft/onnxruntime/issues/20372
         # pylint: disable=broad-except
         except Exception as e:
-            # Log a generic warning message with the exception details
             LOGGER.warning("An error occurred during model inference: %s", e)
-            return []
-        # Convert raw predictions to a list of DetectionResult objects
-        return convert_to_detection_result(
-            predictions=predictions,
-            class_labels=self.class_labels,
-            ratio=ratio,
-            padding=(dw, dh),
-            score_threshold=self.conf_thresh,
-        )
+            return [[] for _ in images]
+
+        batch_predictions = _split_batch_predictions(np.asarray(predictions), len(images))
+        return [
+            convert_to_detection_result(
+                predictions=image_predictions,
+                class_labels=self.class_labels,
+                ratio=ratio,
+                padding=padding,
+                score_threshold=self.conf_thresh,
+            )
+            for image_predictions, (_, ratio, padding) in zip(batch_predictions, processed, strict=True)
+        ]
 
     def show_benchmark(self, num_runs: int = 1_000):
         """
@@ -234,7 +228,7 @@ class YoloV9ObjectDetector(ObjectDetector):
         console = Console()
         # Printing model details outside the table
         model_info = Panel(
-            Text(f"Model: {self.model_name}\nProvider: {self.providers}", style="bold green"),
+            Text(f"Model: {self.model_name}\nProvider: {self.model.get_providers()}", style="bold green"),
             title="Model Information",
             border_style="bright_blue",
             expand=False,
@@ -260,30 +254,5 @@ class YoloV9ObjectDetector(ObjectDetector):
         Returns:
             The image with bounding boxes and labels drawn on it.
         """
-        # Get the predictions
         detections: list[DetectionResult] = self.predict(image)
-        # Draw predictions on the image
-        for detection in detections:
-            bbox = detection.bounding_box
-            label = f"{detection.label}: {detection.confidence:.2f}"
-            # Draw bounding box
-            cv2.rectangle(image, (bbox.x1, bbox.y1), (bbox.x2, bbox.y2), (0, 255, 0), 2)
-            # Calculate the position for the label text above the bounding box
-            (text_width, text_height), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
-            cv2.rectangle(
-                image,
-                (bbox.x1, bbox.y1 - text_height - baseline),
-                (bbox.x1 + text_width, bbox.y1),
-                (0, 255, 0),
-                thickness=cv2.FILLED,
-            )
-            cv2.putText(
-                image,
-                label,
-                (bbox.x1, bbox.y1 - baseline),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.5,
-                (0, 0, 0),
-                1,
-            )
-        return image
+        return draw_detection_results(image, detections)

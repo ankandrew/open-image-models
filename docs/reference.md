@@ -1,26 +1,36 @@
-# 🛠 Pipelines Overview
+# Object Detection
 
-## License Plate Detection
+Use `create_detector` with any registered object detection model. The model registry selects the inference backend,
+class labels, and default confidence threshold.
 
-🚗 **License Plate Detection** allows you to detect and identify license plates in images using a specialized pipeline based on the YOLOv9 model.
+Set `batch_size` above one to batch list inputs when the selected ONNX model has a dynamic batch dimension. Models
+exported with a fixed batch size of one automatically retain serial inference.
 
-The `LicensePlateDetector` is specialized for license plate detection. It utilizes the **YOLOv9** object detection model to recognize license plates in images.
+Local ONNX models require their backend and class labels:
 
-::: open_image_models.detection.pipeline.license_plate.LicensePlateDetector
+```python
+from open_image_models import create_detector
 
----
+detector = create_detector(
+    "/path/to/model.onnx",
+    backend="rf_detr",
+    class_labels=["vehicle", "License Plate"],
+)
+```
 
-# Core API Documentation
+::: open_image_models.detection.factory.create_detector
+
+# Core API
 
 The `core` module provides base classes and protocols for object detection models, including essential data structures like `BoundingBox` and `DetectionResult`.
 
 ### 🔧 Core Components
 
-The following components are used across detection pipelines and models:
+The following components are shared by all detection backends:
 
 - **`BoundingBox`**: Represents a bounding box for detected objects.
 - **`DetectionResult`**: Stores label, confidence, and bounding box for a detection.
-- **`ObjectDetector`**: Protocol defining essential methods like `predict`, `show_benchmark`, and `display_predictions`.
+- **`ObjectDetector`**: Protocol defining `predict` and `display_predictions`.
 
 ::: open_image_models.detection.core.base
 
@@ -28,5 +38,7 @@ The following components are used across detection pipelines and models:
     options:
       group_by_category: false
       members:
-        - PlateDetectorModel
-
+        - DetectionModelName
+        - LicensePlateModelName
+        - DetectionModelSpec
+        - DETECTION_MODELS

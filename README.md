@@ -35,10 +35,10 @@ Easily integrate these models into your apps for **real-time** processing—idea
 production environments. In **one line of code**, you can have **powerful** model **inference** running!
 
 ```python
-from open_image_models import LicensePlateDetector
+from open_image_models import create_detector
 
-lp_detector = LicensePlateDetector(detection_model="yolo-v9-t-256-license-plate-end2end")
-lp_detector.predict("path/to/license_plate_image.jpg")
+detector = create_detector("yolo-v9-t-256-license-plate-end2end")
+detector.predict("path/to/license_plate_image.jpg")
 ```
 
 ✨ That's it! Powerful license plate detection with just a few lines of code.
@@ -66,6 +66,17 @@ pip install open-image-models[onnx]
 
 ### Object Detection
 
+#### COCO Detection
+
+| Model                       | Image Size | Classes | Dynamic Batch |
+|-----------------------------|------------|---------|---------------|
+| `rf-detr-nano-384-coco`     | 384        | 80      | Yes           |
+| `rf-detr-small-512-coco`    | 512        | 80      | Yes           |
+| `rf-detr-medium-576-coco`   | 576        | 80      | Yes           |
+| `rf-detr-large-704-coco`    | 704        | 80      | Yes           |
+
+CoreML is excluded from automatic RF-DETR provider selection.
+
 #### Plate Detection
 
 ![](https://raw.githubusercontent.com/ankandrew/LocalizadorPatentes/2e765012f69c4fbd8decf998e61ed136004ced24/extra/demo_localizador.gif)
@@ -86,24 +97,21 @@ pip install open-image-models[onnx]
 import cv2
 from rich import print
 
-from open_image_models import LicensePlateDetector
+from open_image_models import create_detector
 
-# Initialize the License Plate Detector with the pre-trained YOLOv9 model
-lp_detector = LicensePlateDetector(detection_model="yolo-v9-t-384-license-plate-end2end")
+# Create a detector from a pretrained model
+detector = create_detector("yolo-v9-t-384-license-plate-end2end")
 
 # Load an image
 image_path = "path/to/license_plate_image.jpg"
 image = cv2.imread(image_path)
 
 # Perform license plate detection
-detections = lp_detector.predict(image)
+detections = detector.predict(image)
 print(detections)
 
-# Benchmark the model performance
-lp_detector.show_benchmark(num_runs=1000)
-
 # Display predictions on the image
-annotated_image = lp_detector.display_predictions(image)
+annotated_image = detector.display_predictions(image)
 
 # Show the annotated image
 cv2.imshow("Annotated Image", annotated_image)
